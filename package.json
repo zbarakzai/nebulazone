@@ -1,0 +1,26 @@
+{
+  "name": "nebulazone",
+  "version": "1.0.0",
+  "description": "NebulaZone is a beautiful and feature-rich React Dropzone library that enables seamless file uploads with a touch of cosmic elegance. Embrace the beauty of the universe as you effortlessly handle file uploads in your React applications.",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "[\"react\"",
+    "\"dropzone\"",
+    "\"file",
+    "upload\"",
+    "\"nebula\"]"
+  ],
+  "author": "Zakiullah Barakzai",
+  "license": "MIT",
+  "devDependencies": {
+    "@tsconfig/strictest": "^2.0.1",
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "typescript": "^5.1.6"
+  }
+}
