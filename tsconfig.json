@@ -8,7 +8,10 @@
     "lib": ["ESNext", "DOM"],
     "jsx": "react-jsx",
     "declaration": true,
-    "allowSyntheticDefaultImports": true
+    "declarationDir": "types",
+    "sourceMap": true,
+    "allowSyntheticDefaultImports": true,
+    "emitDeclarationOnly": true
   },
   "exclude": ["**/node_modules/**", "**/lib/**"]
 }
