@@ -12,9 +12,9 @@ const getUniqueId = (): string => Math.random().toString(36).substring(2, 12);
  * @param {Function} fn - The function to be used as the web worker.
  * @returns {Object} An object with methods `transfer`, `post`, and `terminate` representing the web worker.
  */
-export function createWorker(fn: Function) {
-  const workerBlob = new Blob(["(", fn.toString(), ")()"], {
-    type: "application/javascript",
+export function createWorker(fn: () => void) {
+  const workerBlob = new Blob(['(', fn.toString(), ')()'], {
+    type: 'application/javascript',
   });
   const workerURL = URL.createObjectURL(workerBlob);
   const worker = new Worker(workerURL);
@@ -26,15 +26,11 @@ export function createWorker(fn: Function) {
      * @param {*} message - The data to be transferred.
      * @param {Function} cb - The callback function to be called when the worker responds.
      */
-    transfer: (message: any, cb: Function) => {},
-    /**
-     * Method to post data to the worker with a callback function and optional transfer list.
-     *
-     * @param {*} message - The data to be sent to the worker.
-     * @param {Function} cb - The callback function to be called when the worker responds.
-     * @param {Transferable[]} [transferList] - An optional array of transferable objects to be transferred to the worker.
-     */
-    post: (message: any, cb: Function, transferList?: Transferable[]) => {
+    post: (
+      message: unknown,
+      cb: (e: MessageEvent<unknown>) => void,
+      transferList?: Transferable[],
+    ) => {
       const id = getUniqueId();
 
       worker.onmessage = (e) => {
@@ -48,7 +44,9 @@ export function createWorker(fn: Function) {
           id,
           message,
         },
-        transferList
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        transferList,
       );
     },
     /**
@@ -65,14 +63,13 @@ export function createWorker(fn: Function) {
  * A Web Worker that processes image files to create an ImageBitmap.
  */
 export function BitmapWorker(): void {
-  self.onmessage = (
-    e: MessageEvent<{ id: string; message: { file: File } }>
-  ) => {
+  self.onmessage = (e) => {
     // Process the image file to create an ImageBitmap
     createImageBitmap(e.data.message.file).then((bitmap) => {
       // Post the created ImageBitmap back to the main thread with an ID
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      self.postMessage({ id: e.data.id, message: bitmap }, [bitmap]);
+      self.postMessage({id: e.data.id, message: bitmap}, [bitmap]);
     });
   };
 }

@@ -1,5 +1,4 @@
-import { usePreviewContext } from "../PreviewContext";
-import { isFile } from "./fileValidation";
+import {usePreviewContext} from '../PreviewContext';
 
 export interface CropOptions {
   center?: {
@@ -47,14 +46,14 @@ export const isEmpty = (value: unknown) => {
  * @returns {number|undefined} The numeric aspect ratio, or undefined if unable to parse.
  */
 export function getNumericAspectRatioFromString(
-  aspectRatio: string
+  aspectRatio: string,
 ): number | string {
   if (isEmpty(aspectRatio)) {
     return aspectRatio;
   }
 
   if (/:/.test(aspectRatio)) {
-    const parts = aspectRatio.split(":");
+    const parts = aspectRatio.split(':');
     const numerator = parseFloat(parts[0]);
     const denominator = parseFloat(parts[1]);
     return denominator / numerator;
@@ -92,7 +91,7 @@ export function allowCrop(file: File, allowCrop: boolean) {
  * @returns {boolean} - True if the value is an object, otherwise false.
  */
 export function isObject(value: unknown) {
-  return typeof value === "object" && value !== null;
+  return typeof value === 'object' && value !== null;
 }
 
 /**
@@ -102,7 +101,7 @@ export function isObject(value: unknown) {
  * @returns {boolean} - True if the value is a number, otherwise false.
  */
 export function isNumber(value: unknown) {
-  return typeof value === "number" && !isNaN(value);
+  return typeof value === 'number' && !isNaN(value);
 }
 
 /**
@@ -128,32 +127,34 @@ export function createCrop(file: File, cropAllowed: boolean) {
     return crop;
   };
 
-  const setImageCropCenter = (center: CropOptions["center"]) => {
+  const setImageCropCenter = (center: CropOptions['center']) => {
     if (!allowCrop(file, cropAllowed) || !isObject(center)) return;
 
-    return Object.assign({}, currentCrop, { center });
+    return Object.assign({}, currentCrop, {center});
   };
 
-  const setImageCropZoom = (zoom: CropOptions["zoom"]) => {
+  const setImageCropZoom = (zoom: CropOptions['zoom']) => {
     if (!allowCrop(file, cropAllowed) || !isNumber(zoom)) return;
 
-    return Object.assign({}, currentCrop, { zoom: Math.max(1, zoom) });
+    return Object.assign({}, currentCrop, {
+      zoom: Math.max(1, zoom as number),
+    });
   };
 
-  const setImageCropRotation = (rotation: CropOptions["rotation"]) => {
+  const setImageCropRotation = (rotation: CropOptions['rotation']) => {
     if (!allowCrop(file, cropAllowed) || !isNumber(rotation)) return;
 
-    return Object.assign({}, currentCrop, { rotation });
+    return Object.assign({}, currentCrop, {rotation});
   };
 
-  const setImageCropFlip = (flip: CropOptions["flip"]) => {
+  const setImageCropFlip = (flip: CropOptions['flip']) => {
     if (!allowCrop(file, cropAllowed) || !isObject(flip)) return;
 
-    return Object.assign({}, currentCrop, { flip });
+    return Object.assign({}, currentCrop, {flip});
   };
 
   const setImageCropAspectRatio = (newAspectRatio: string) => {
-    if (!allowCrop(file, cropAllowed) || typeof newAspectRatio === "undefined")
+    if (!allowCrop(file, cropAllowed) || typeof newAspectRatio === 'undefined')
       return;
 
     const aspectRatio = getNumericAspectRatioFromString(newAspectRatio);
@@ -197,8 +198,8 @@ export function createCrop(file: File, cropAllowed: boolean) {
  * @returns {CropRect} The centered crop rectangle with x, y, width, and height properties.
  */
 export function getCenteredCropRect(
-  container: { height: number; width: number },
-  aspectRatio: number
+  container: {height: number; width: number},
+  aspectRatio: number,
 ) {
   let width = container.width;
   let height = width * aspectRatio;
@@ -229,10 +230,10 @@ export function getCenteredCropRect(
  * @returns {number} The zoom factor required to fit the image within the rotated crop rectangle.
  */
 export function getImageRectZoomFactor(
-  imageRect: { height: number; width: number },
+  imageRect: {height: number; width: number},
   cropRect: Rect,
   rotation: number,
-  center: { x: number; y: number }
+  center: {x: number; y: number},
 ) {
   // calculate available space round image center position
   const cx = center.x > 0.5 ? 1 - center.x : center.x;
@@ -246,7 +247,7 @@ export function getImageRectZoomFactor(
   // calculate scalar required to fit image
   return Math.max(
     rotatedCropSize.width / imageWidth,
-    rotatedCropSize.height / imageHeight
+    rotatedCropSize.height / imageHeight,
   );
 }
 
@@ -257,7 +258,7 @@ export function getImageRectZoomFactor(
  * @param {number} y - The y-coordinate of the vector.
  * @returns {Vector} The created vector with x and y coordinates.
  */
-const createVector = (x: number, y: number) => ({ x, y });
+const createVector = (x: number, y: number) => ({x, y});
 
 /**
  * Calculates the offset point on the edge of a rectangle after rotation.
@@ -340,12 +341,12 @@ function getRotatedRectSize(rect: Rect, rotation: number) {
   const tl = createVector(rect.x + Math.abs(hor.x), rect.y - Math.abs(hor.y));
   const tr = createVector(
     rect.x + rect.width + Math.abs(ver.y),
-    rect.y + Math.abs(ver.x)
+    rect.y + Math.abs(ver.x),
   );
 
   const bl = createVector(
     rect.x - Math.abs(ver.y),
-    rect.y + rect.height - Math.abs(ver.x)
+    rect.y + rect.height - Math.abs(ver.x),
   );
 
   return {
@@ -365,47 +366,28 @@ function getRotatedRectSize(rect: Rect, rotation: number) {
  */
 export function useLoadCropData() {
   const privewContext = usePreviewContext();
-
-  // if this is not an image we do not have any business cropping it and we'll continue with the unaltered dataset
-  if (
-    !isFile(privewContext.structure.file) ||
-    !isImage(privewContext.structure.file) ||
-    !privewContext.structure.allowCrop
-  ) {
-    return null;
-  }
-
-  // ! it's important to track how to load the crop
-  // const crop = undefined;
-
-  // if (crop) {
-  //   return { item: createCrop(file, cropAllowed), crop };
-  // }
-
-  const newCrop = {
-    center: {
-      x: 0.5,
-      y: 0.5,
-    },
-    flip: {
-      horizontal: false,
-      vertical: false,
-    },
-    rotation: 0,
-    zoom: 1,
-    aspectRatio: privewContext.dimensions.imageCropAspectRatio
-      ? getNumericAspectRatioFromString(
-          privewContext.dimensions.imageCropAspectRatio
-        )
-      : null,
-    scaleToFit: undefined,
-  } as const;
-
   return {
     item: createCrop(
       privewContext.structure.file,
-      privewContext.structure.allowCrop
+      privewContext.structure.allowCrop,
     ),
-    crop: { ...newCrop },
+    crop: {
+      center: {
+        x: 0.5,
+        y: 0.5,
+      },
+      flip: {
+        horizontal: false,
+        vertical: false,
+      },
+      rotation: 0,
+      zoom: 1,
+      aspectRatio: privewContext.dimensions.imageCropAspectRatio
+        ? getNumericAspectRatioFromString(
+            privewContext.dimensions.imageCropAspectRatio,
+          )
+        : null,
+      scaleToFit: undefined,
+    },
   };
 }

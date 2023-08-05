@@ -1,38 +1,40 @@
-import { useDropZoneContext } from "../DropZoneContext";
-import { ImagePreview } from "./ImagePreview";
-import { PreviewContext } from "../PreviewContext";
+import React from 'react';
+
+import {useDropZoneContext} from '../DropZoneContext';
+import {ImagePreview} from './ImagePreview';
+import {PreviewContext} from '../PreviewContext';
 import {
   useImageSize,
   useItemRescale,
   usePreviewChecks,
-} from "../utils/usePreview";
+} from '../utils/usePreview';
 
-import { STRUCTURE_DEFAULTS, DIMENSION_DEFAULTS } from "../utils/previewUtils";
+import {STRUCTURE_DEFAULTS, DIMENSION_DEFAULTS} from '../utils/previewUtils';
 
 export interface PreviewProps {
   structure: {
     allowImagePreview?: boolean;
-    transparencyIndicator?: "grid" | string;
+    transparencyIndicator?: 'grid' | string;
     allowCrop: boolean;
     file: File;
   };
   dimensions: {
     imagePreviewMinHeight?: number;
     imagePreviewMaxHeight?: number;
-    imagePreviewHeight?: number;
-    imagePreviewMaxFileSize?: number;
-    itemPanelAspectRatio?: string;
-    panelAspectRatio?: string;
+    imagePreviewHeight?: number | null;
+    imagePreviewMaxFileSize?: number | null;
+    itemPanelAspectRatio?: string | null;
+    panelAspectRatio?: string | null;
     imagePreviewZoomFactor?: number;
     imageCropAspectRatio: `${string}:${string}`;
     imagePreviewUpscale?: boolean;
   };
 }
 
-export function Preview({ structure, dimensions }: PreviewProps) {
+export function Preview({structure, dimensions}: PreviewProps) {
   const dropZoneContext = useDropZoneContext();
-  const structureData = { ...STRUCTURE_DEFAULTS, ...structure };
-  const dimensionsData = { ...DIMENSION_DEFAULTS, ...dimensions };
+  const structureData = {...STRUCTURE_DEFAULTS, ...structure};
+  const dimensionsData = {...DIMENSION_DEFAULTS, ...dimensions};
 
   const [imageSize] = useImageSize(structure.file);
   const [isPreviewDisallowed] = usePreviewChecks(structure.file, dimensions);
@@ -41,21 +43,21 @@ export function Preview({ structure, dimensions }: PreviewProps) {
     structure.file,
     dimensionsData,
     dropZoneContext.rootNode,
-    imageSize
+    imageSize,
   );
 
   const contextValue = {
     dimensionsData,
     dimensions: dimensionsData,
     structure: structureData,
-    imageHeight: imageSize?.height,
-    imageWidth: imageSize?.width,
+    imageHeight: imageSize?.height || 0,
+    imageWidth: imageSize?.width || 0,
     viewHeight: itemHeight,
   };
 
   return (
     <PreviewContext.Provider value={contextValue}>
-      <div id="panel" style={{ height: itemHeight }}>
+      <div id="panel" style={{height: itemHeight}}>
         {!isPreviewDisallowed && itemHeight && <ImagePreview />}
       </div>
     </PreviewContext.Provider>

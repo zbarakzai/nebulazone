@@ -1,36 +1,38 @@
-import { useRef, useEffect, useState } from "react";
-import { useDropZoneContext } from "../DropZoneContext";
-import { usePreviewContext } from "../PreviewContext";
-import { ClipView } from "./ClipView";
-import { useLoadCropData } from "../utils/crop";
-import type { PreviewContextType } from "../PreviewContext";
-import type { DropZoneContextType } from "../DropZoneContext";
+import React from 'react';
+import {useRef, useEffect, useState} from 'react';
+
+import {useDropZoneContext} from '../DropZoneContext';
+import {usePreviewContext} from '../PreviewContext';
+import {ClipView} from './ClipView';
+import {useLoadCropData} from '../utils/crop';
+import type {PreviewContextType} from '../PreviewContext';
+import type {DropZoneContextType} from '../DropZoneContext';
 
 const calculateClipSize = (
-  ref: React.RefObject<HTMLDivElement>,
+  ref: React.RefObject<HTMLDivElement> | undefined,
   privewContext: PreviewContextType,
   cropData: ReturnType<typeof useLoadCropData>,
-  dropZoneContext: DropZoneContextType
+  dropZoneContext: DropZoneContextType,
 ) => {
-  const { panelAspectRatio, allowMultiple } = dropZoneContext;
-  const { dimensions, imageHeight, imageWidth } = privewContext;
+  const {panelAspectRatio, allowMultiple} = dropZoneContext;
+  const {dimensions, imageHeight, imageWidth} = privewContext;
 
   const imageAspectRatio = imageHeight / imageWidth;
 
   let aspectRatio = cropData.crop.aspectRatio || imageAspectRatio;
 
-  const containerRect = ref.current.getBoundingClientRect();
+  const containerRect = ref?.current?.getBoundingClientRect();
 
   // calculate container size
-  const containerWidth = containerRect?.width;
-  const containerHeight = containerRect?.height;
+  const containerWidth = containerRect?.width || 0;
+  const containerHeight = containerRect?.height || 0;
 
   let fixedPreviewHeight = dimensions.imagePreviewHeight;
   const minPreviewHeight = dimensions.imagePreviewMinHeight;
   const maxPreviewHeight = dimensions.imagePreviewMaxHeight;
 
   const calculatedPanelRatio =
-    typeof panelAspectRatio === "string"
+    typeof panelAspectRatio === 'string'
       ? parseInt(panelAspectRatio)
       : panelAspectRatio;
 
@@ -44,12 +46,16 @@ const calculateClipSize = (
     fixedPreviewHeight !== null
       ? fixedPreviewHeight
       : Math.max(
-          minPreviewHeight,
+          minPreviewHeight as number,
           Math.min(
             containerWidth * parseFloat(`${aspectRatio}`),
-            maxPreviewHeight
-          )
+            maxPreviewHeight as number,
+          ),
         );
+
+  if (!clipHeight) {
+    clipHeight = NaN;
+  }
 
   let clipWidth = clipHeight / parseFloat(`${aspectRatio}`);
   if (clipWidth > containerWidth) {
@@ -62,15 +68,15 @@ const calculateClipSize = (
     clipWidth = containerHeight / parseFloat(`${aspectRatio}`);
   }
 
-  return { height: clipWidth, width: clipHeight };
+  return {height: clipWidth, width: clipHeight};
 };
 
 export function ImagePreview() {
-  const ref = useRef<HTMLDivElement>();
+  const ref = useRef<HTMLDivElement>(null);
   const dropZoneContext = useDropZoneContext();
   const previewContext = usePreviewContext();
 
-  const [clipSize, setClipSize] = useState<{ height: number; width: number }>({
+  const [clipSize, setClipSize] = useState<{height: number; width: number}>({
     height: 0,
     width: 0,
   });
@@ -82,7 +88,7 @@ export function ImagePreview() {
       ref,
       previewContext,
       cropData,
-      dropZoneContext
+      dropZoneContext,
     );
 
     setClipSize(newClipSize);

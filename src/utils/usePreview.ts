@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
-import { useDropZoneContext } from "../DropZoneContext";
-import { usePreviewContext } from "../PreviewContext";
+import {useDropZoneContext} from '../DropZoneContext';
+import {usePreviewContext} from '../PreviewContext';
 import {
   loadImage,
   fixImageOrientation,
@@ -9,11 +9,11 @@ import {
   getImageSizeFromBlob,
   isBitmap,
   isPreviewableImage,
-} from "./previewUtils";
-import { createWorker, BitmapWorker } from "./worker";
-import type { PreviewProps } from "../components/Preview";
-import { getNumericAspectRatioFromString } from "./crop";
-import { isFile } from "./fileValidation";
+} from './previewUtils';
+import {createWorker, BitmapWorker} from './worker';
+import type {PreviewProps} from '../components/Preview';
+import {getNumericAspectRatioFromString} from './crop';
+import {isFile} from './fileValidation';
 
 interface ImageSize {
   width: number;
@@ -31,20 +31,20 @@ export const usePreview = () => {
   const dropZoneContext = useDropZoneContext();
 
   const file = previewContext.structure.file;
-  const zoomFactor = previewContext.dimensions.imagePreviewZoomFactor;
+  const zoomFactor = previewContext.dimensions.imagePreviewZoomFactor || NaN;
 
-  const panelRect = dropZoneContext.rootNode.current.getBoundingClientRect();
+  const panelRect = dropZoneContext.rootNode.current?.getBoundingClientRect();
 
   // Calculate the file URL and memoize it
   const fileURL = useMemo(
-    () => (file ? URL.createObjectURL(file) : ""),
-    [file]
+    () => (file ? URL.createObjectURL(file) : ''),
+    [file],
   );
 
   //function to load image
   const loadImageThenPreview = useCallback(() => {
     loadImage(fileURL).then((imageData: HTMLImageElement) =>
-      previewImageLoaded(imageData)
+      previewImageLoaded(imageData),
     );
   }, [fileURL]);
 
@@ -55,7 +55,7 @@ export const usePreview = () => {
     URL.revokeObjectURL(fileURL);
     const isReversed = [5, 6, 7, 8].includes(orientation);
 
-    let { width, height } = imageData;
+    let {width, height} = imageData;
     if (isReversed) [width, height] = [height, width];
 
     showImage(width, height, imageData);
@@ -69,31 +69,37 @@ export const usePreview = () => {
       const scaleFactor = zoomFactor * pixelDensityFactor;
 
       const previewImageRatio = height / width;
-      const previewContainerWidth = panelRect.width;
-      const previewContainerHeight = panelRect.height;
+      const previewContainerWidth = panelRect?.width;
+      const previewContainerHeight = panelRect?.height;
 
       let imageWidth = previewContainerWidth;
-      let imageHeight = imageWidth * previewImageRatio;
+      let imageHeight = (imageWidth as number) * previewImageRatio;
 
       if (previewImageRatio > 1) {
-        imageWidth = Math.min(width, previewContainerWidth * scaleFactor);
+        imageWidth = Math.min(
+          width,
+          (previewContainerWidth as number) * scaleFactor,
+        );
         // imageHeight = imageWidth * previewImageRatio;
-        imageHeight = previewContainerWidth;
+        imageHeight = previewContainerWidth as number;
       } else {
-        imageHeight = Math.min(height, previewContainerHeight * scaleFactor);
+        imageHeight = Math.min(
+          height,
+          (previewContainerHeight as number) * scaleFactor,
+        );
         imageWidth = imageHeight / previewImageRatio;
       }
 
       renderImage(width, height, imageData);
     },
-    []
+    [],
   );
 
   //function to render the image to the canvas
   const renderImage = (
     width: number,
     height: number,
-    imageData: HTMLImageElement
+    imageData: HTMLImageElement,
   ) => {
     // TODO: the oriantation variable should come from EXIF.
     const orientation = -1;
@@ -102,24 +108,31 @@ export const usePreview = () => {
     height = Math.round(height);
 
     const canvas = canvasRef.current;
+
+    if (!canvas) {
+      return;
+    }
+
     canvas.width = width;
     canvas.height = height;
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext('2d');
 
     fixImageOrientation(ctx, width, height, orientation);
-    ctx.drawImage(imageData, 0, 0, width, height);
+    ctx?.drawImage(imageData, 0, 0, width, height);
   };
 
   useEffect(() => {
-    if (!file || !panelRect) return null;
+    if (!file || !panelRect) return;
 
     if (canCreateImageBitmap(file)) {
       const worker = createWorker(BitmapWorker);
-      worker.post({ file }, (imageBitmap) => {
+      worker.post({file}, (imageBitmap) => {
         worker.terminate();
         if (!imageBitmap) {
           loadImageThenPreview();
         } else {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
           previewImageLoaded(imageBitmap);
         }
       });
@@ -137,10 +150,10 @@ export const usePreview = () => {
  * @returns {[ImageSize | null, React.Dispatch<React.SetStateAction<ImageSize | null>>]} - A tuple containing the image size and a function to set the image size state.
  */
 export const useImageSize = (
-  file: File
+  file: File,
 ): [
   ImageSize | null,
-  React.Dispatch<React.SetStateAction<ImageSize | null>>
+  React.Dispatch<React.SetStateAction<ImageSize | null>>,
 ] => {
   const [imageSize, setImageSize] = useState<ImageSize | null>(null);
 
@@ -151,6 +164,7 @@ export const useImageSize = (
           const size = await getImageSizeFromBlob(file);
           setImageSize(size);
         } catch (error) {
+          // eslint-disable-next-line no-console
           console.error(error);
         }
       }
@@ -171,11 +185,11 @@ export const useImageSize = (
  */
 export const useItemRescale = (
   file: File,
-  dimensions: PreviewProps["dimensions"],
+  dimensions: PreviewProps['dimensions'],
   rootNode: React.RefObject<HTMLElement>,
-  imageSize: ImageSize | null
-): [number, React.Dispatch<React.SetStateAction<number | null>>] => {
-  const [itemHeight, setItemHeight] = useState<number | null>(null);
+  imageSize: ImageSize | null,
+): [number, React.Dispatch<React.SetStateAction<number>>] => {
+  const [itemHeight, setItemHeight] = useState<number>(0);
 
   useEffect(() => {
     if (!imageSize) return;
@@ -201,15 +215,15 @@ export const useItemRescale = (
     }
 
     const imageAspectRatio = imageSize.height / imageSize.width;
-    let numaricAspectRatio = dimensions.imageCropAspectRatio
+    const numaricAspectRatio = dimensions.imageCropAspectRatio
       ? getNumericAspectRatioFromString(dimensions.imageCropAspectRatio)
       : null;
 
     const previewAspectRatio = numaricAspectRatio || imageAspectRatio;
 
-    let previewHeightMax = Math.max(
-      dimensions.imagePreviewMinHeight,
-      Math.min(imageSize.height, dimensions.imagePreviewMaxHeight)
+    const previewHeightMax = Math.max(
+      dimensions.imagePreviewMinHeight as number,
+      Math.min(imageSize.height, dimensions.imagePreviewMaxHeight as number),
     );
 
     const rootRect = rootNode.current?.getBoundingClientRect();
@@ -217,7 +231,7 @@ export const useItemRescale = (
     if (rootRect) {
       const previewHeight = Math.min(
         rootRect.width * Number(previewAspectRatio),
-        previewHeightMax
+        previewHeightMax,
       );
 
       setItemHeight(previewHeight);
@@ -234,8 +248,8 @@ export const useItemRescale = (
  */
 export const usePreviewChecks = (
   file: File,
-  input: PreviewProps["dimensions"]
-): [boolean, React.Dispatch<React.SetStateAction<boolean | null>>, number] => {
+  input: PreviewProps['dimensions'],
+): [boolean, React.Dispatch<React.SetStateAction<boolean>>, number] => {
   const [isPreviewDisabled, setPreviewDisabled] = useState(false);
   const [panelHeight, setPanelHeight] = useState(0);
 
@@ -254,7 +268,7 @@ export const usePreviewChecks = (
     if (
       input.imagePreviewMaxFileSize &&
       file.size > input.imagePreviewMaxFileSize &&
-      !("createImageBitmap" in window)
+      !('createImageBitmap' in window)
     ) {
       setPreviewDisabled(true);
     }

@@ -1,18 +1,18 @@
 export const transforms = {
   1: () => [1, 0, 0, 1, 0, 0],
-  2: (width) => [-1, 0, 0, 1, width, 0],
-  3: (width, height) => [-1, 0, 0, -1, width, height],
-  4: (width, height) => [1, 0, 0, -1, 0, height],
+  2: (width: number) => [-1, 0, 0, 1, width, 0],
+  3: (width: number, height: number) => [-1, 0, 0, -1, width, height],
+  4: (_: number, height: number) => [1, 0, 0, -1, 0, height],
   5: () => [0, 1, 1, 0, 0, 0],
-  6: (width, height) => [0, 1, -1, 0, height, 0],
-  7: (width, height) => [0, -1, -1, 0, height, width],
-  8: (width) => [0, -1, 1, 0, 0, width],
+  6: (_: number, height: number) => [0, 1, -1, 0, height, 0],
+  7: (width: number, height: number) => [0, -1, -1, 0, height, width],
+  8: (width: number) => [0, -1, 1, 0, 0, width],
 };
 
 export const STRUCTURE_DEFAULTS = {
   allowImagePreview: true,
   allowCrop: false,
-  transparencyIndicator: "grid",
+  transparencyIndicator: 'grid',
   file: null, // This may be updated based on the requirements
 };
 
@@ -24,19 +24,19 @@ export const DIMENSION_DEFAULTS = {
   itemPanelAspectRatio: null,
   panelAspectRatio: null,
   imagePreviewZoomFactor: 2,
-  imageCropAspectRatio: "1:1",
+  imageCropAspectRatio: '1:1',
 };
 
 export const getImageSizeFromBlob = (
-  file: File
-): Promise<{ width: number; height: number }> => {
-  return new Promise<{ width: number; height: number }>((resolve, reject) => {
+  file: File,
+): Promise<{width: number; height: number}> => {
+  return new Promise<{width: number; height: number}>((resolve, reject) => {
     const image = new Image();
 
     image.onload = () => {
       const width: number = image.naturalWidth;
       const height: number = image.naturalHeight;
-      resolve({ width, height });
+      resolve({width, height});
     };
 
     const reader = new FileReader();
@@ -47,8 +47,8 @@ export const getImageSizeFromBlob = (
       }
     };
 
-    reader.onerror = (event: ProgressEvent<FileReader>) => {
-      reject(new Error("Error loading image."));
+    reader.onerror = () => {
+      reject(new Error('Error loading image.'));
     };
 
     reader.readAsDataURL(file);
@@ -79,7 +79,7 @@ export function canCreateImageBitmap(file: File) {
   const firefoxVersion = isFirefox ? parseInt(isFirefox[1]) : null;
   if (firefoxVersion !== null && firefoxVersion <= 58) return false;
 
-  return "createImageBitmap" in window && isBitmap(file);
+  return 'createImageBitmap' in window && isBitmap(file);
 }
 
 /**
@@ -99,17 +99,23 @@ export const isBitmap = (file: File): boolean =>
  * @param {number} orientation - The orientation of the image (a value between 1 and 8).
  */
 export const fixImageOrientation = (
-  ctx: CanvasRenderingContext2D,
+  ctx: CanvasRenderingContext2D | null,
   width: number,
   height: number,
-  orientation: number
+  orientation: number,
 ): void => {
   // no orientation supplied
   if (orientation === -1) {
     return;
   }
 
-  ctx.transform.apply(ctx, transforms[orientation](width, height));
+  const transformResult = transforms[orientation as keyof typeof transforms](
+    width,
+    height,
+  );
+
+  // eslint-disable-next-line prefer-spread, @typescript-eslint/no-explicit-any
+  ctx?.transform.apply(ctx, transformResult as any);
 };
 
 /**
@@ -132,7 +138,7 @@ export async function loadImage(url: string): Promise<HTMLImageElement> {
     };
 
     // Set the crossOrigin attribute to allow cross-origin image loading.
-    img.crossOrigin = "anonymous";
+    img.crossOrigin = 'anonymous';
     img.src = url;
   });
 }

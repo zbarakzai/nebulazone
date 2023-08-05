@@ -3,9 +3,11 @@
   "version": "0.0.1",
   "description": "NebulaZone is a beautiful and feature-rich React Dropzone library that enables seamless file uploads with a touch of cosmic elegance. Embrace the beauty of the universe as you effortlessly handle file uploads in your React applications.",
   "scripts": {
-    "build:umd": "rollup -c",
+    "build:js": "rollup -c",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "prettier": "prettier . --write",
+    "lint": "eslint --cache ."
   },
   "keywords": [
     "[\"react\"",
@@ -17,11 +19,19 @@
   "author": "Zakiullah Barakzai",
   "license": "MIT",
   "devDependencies": {
+    "@babel/core": "^7.22.9",
+    "@babel/plugin-transform-runtime": "^7.22.9",
+    "@babel/preset-env": "^7.22.9",
+    "@babel/preset-react": "^7.22.5",
+    "@babel/preset-typescript": "^7.22.5",
     "@rollup/plugin-babel": "^6.0.3",
     "@rollup/plugin-commonjs": "^25.0.3",
+    "@rollup/plugin-image": "^3.0.2",
+    "@rollup/plugin-json": "^6.0.0",
     "@rollup/plugin-node-resolve": "^15.1.0",
     "@rollup/plugin-terser": "^0.4.3",
     "@rollup/plugin-typescript": "^11.1.2",
+    "@rollup/plugin-virtual": "^3.0.1",
     "@storybook/addon-essentials": "^7.1.0",
     "@storybook/addon-interactions": "^7.1.0",
     "@storybook/addon-links": "^7.1.0",
@@ -33,12 +43,18 @@
     "@tsconfig/strictest": "^2.0.1",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
+    "@typescript-eslint/eslint-plugin": "^6.2.1",
     "autoprefixer": "^10.4.14",
+    "eslint": "^8.46.0",
+    "eslint-plugin-import": "^2.28.0",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
+    "eslint-plugin-prettier": "^5.0.0",
+    "eslint-plugin-react": "^7.33.1",
     "postcss": "^8.4.27",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "prettier": "^3.0.1",
     "rollup": "^3.26.3",
     "rollup-plugin-dts": "^5.3.0",
+    "rollup-plugin-node-externals": "^6.1.1",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-postcss": "^4.0.2",
     "storybook": "^7.1.0",
@@ -48,14 +64,17 @@
     "vite-tsconfig-paths": "^4.2.0",
     "vitest": "^0.33.0"
   },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "engines": {
+    "node": "^14.0.0"
+  },
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "files": [
-    "dist"
+    "dist/"
   ],
-  "types": "dist/index.d.ts",
-  "dependencies": {
-    "framer-motion": "^10.13.0",
-    "react-dropzone": "^14.2.3"
-  }
+  "types": "dist/index.d.ts"
 }

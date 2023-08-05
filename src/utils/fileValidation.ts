@@ -2,8 +2,8 @@
 // MIT license, Copyright (c) 2019 PQINA | Rik Schennink <rik@pqina.nl>.
 // However, we have rewritten the implementation completely in some cases.
 
-import type { SizeUnit } from "./fileSizeValidation";
-import { isValidFileSize } from "./fileSizeValidation";
+import type {SizeUnit} from './fileSizeValidation';
+import {isValidFileSize} from './fileSizeValidation';
 
 type WildcardMimeType = `${string}/*`;
 type ExtractMimeType = string;
@@ -12,7 +12,7 @@ interface FileExtensionMap {
   [key: string]: string;
 }
 
-type Item = string | { type: string };
+type Item = string | {type: string};
 
 interface FileValidationResult {
   acceptedFiles: File[];
@@ -20,8 +20,8 @@ interface FileValidationResult {
   files: File[];
 }
 
-interface ValidationError {
-  type: "INVALID_FILE_TYPE" | "INVALID_FILE_SIZE" | "TOTAL_SIZE_EXCEEDED";
+export interface ValidationError {
+  type: 'INVALID_FILE_TYPE' | 'INVALID_FILE_SIZE' | 'TOTAL_SIZE_EXCEEDED';
   message: string;
 }
 
@@ -33,7 +33,7 @@ interface ValidationError {
  */
 function mimeTypeMatchesWildCard(
   mimeType: ExtractMimeType,
-  wildcard: WildcardMimeType
+  wildcard: WildcardMimeType,
 ) {
   const mimeTypeGroup = (/^[^/]+/.exec(mimeType) || []).pop();
   const wildcardGroup = wildcard.slice(0, -2);
@@ -48,10 +48,10 @@ function mimeTypeMatchesWildCard(
  */
 function isValidMimeType(
   acceptedTypes: WildcardMimeType[],
-  userInputType: string
+  userInputType: string,
 ) {
   return acceptedTypes.some((acceptedType) => {
-    if (acceptedType.endsWith("*")) {
+    if (acceptedType.endsWith('*')) {
       return mimeTypeMatchesWildCard(userInputType, acceptedType);
     }
 
@@ -64,35 +64,35 @@ function isValidMimeType(
  * @param extension The file extension.
  * @returns The guessed MIME type.
  */
-function guessMimeType(extension = ""): string {
+function guessMimeType(extension = ''): string {
   const imageExtensions: string[] = [
-    "jpg",
-    "jpeg",
-    "png",
-    "gif",
-    "bmp",
-    "webp",
-    "svg",
-    "tiff",
+    'jpg',
+    'jpeg',
+    'png',
+    'gif',
+    'bmp',
+    'webp',
+    'svg',
+    'tiff',
   ];
 
-  const textExtensions: string[] = ["css", "csv", "html", "txt"];
+  const textExtensions: string[] = ['css', 'csv', 'html', 'txt'];
 
   const extensionMimeMap: FileExtensionMap = {
-    zip: "zip|compressed",
-    epub: "application/epub+zip",
+    zip: 'zip|compressed',
+    epub: 'application/epub+zip',
   };
 
   // eslint-disable-next-line no-param-reassign
   extension = extension.toLowerCase();
 
   if (imageExtensions.includes(extension)) {
-    if (extension === "jpg") {
-      return "image/jpeg";
+    if (extension === 'jpg') {
+      return 'image/jpeg';
     }
 
-    if (extension === "svg") {
-      return "image/svg+xml";
+    if (extension === 'svg') {
+      return 'image/svg+xml';
     }
 
     return `image/${extension}`;
@@ -102,7 +102,7 @@ function guessMimeType(extension = ""): string {
     return `text/${extension}`;
   }
 
-  return extensionMimeMap[extension] || "";
+  return extensionMimeMap[extension] || '';
 }
 
 /**
@@ -111,8 +111,8 @@ function guessMimeType(extension = ""): string {
  * @returns The file extension or an empty string if no extension is found.
  */
 function getExtensionFromFilename(filename: string) {
-  const parts = filename.split(".");
-  return parts.length > 1 ? parts.pop()?.toLowerCase() : "";
+  const parts = filename.split('.');
+  return parts.length > 1 ? parts.pop()?.toLowerCase() : '';
 }
 
 /**
@@ -121,16 +121,7 @@ function getExtensionFromFilename(filename: string) {
  * @returns The filename or an empty string if no filename is found.
  */
 function getFilenameFromURL(url: string) {
-  return url.split("/").pop()?.split("?").shift();
-}
-
-/**
- * Check if the given value is a string.
- * @param value The value to check.
- * @returns true if the value is a string; otherwise, false.
- */
-function isString(value: any) {
-  return typeof value === "string";
+  return url.split('/').pop()?.split('?').shift();
 }
 
 /**
@@ -142,10 +133,10 @@ function getItemType(item: Item) {
   if (isObject(item)) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    return item.type || "";
+    return item.type || '';
   }
 
-  if (isString(item)) {
+  if (typeof item === 'string') {
     const filename = getFilenameFromURL(item as string);
     const extension = getExtensionFromFilename(filename as string);
 
@@ -154,7 +145,7 @@ function getItemType(item: Item) {
     }
   }
 
-  return "";
+  return '';
 }
 
 /**
@@ -163,7 +154,7 @@ function getItemType(item: Item) {
  * @returns true if the item is an object; otherwise, false.
  */
 function isObject(item: Item) {
-  return typeof item === "object" && item !== null;
+  return typeof item === 'object' && item !== null;
 }
 
 /**
@@ -175,10 +166,10 @@ function isObject(item: Item) {
  */
 export function isFileAcceptable(
   file: File,
-  acceptedFileTypes: string | string[] | undefined
+  acceptedFileTypes: string | string[] | undefined,
 ) {
   // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Recommended_drag_types
-  if (file.type === "application/x-moz-file") {
+  if (file.type === 'application/x-moz-file') {
     return true;
   }
 
@@ -189,7 +180,7 @@ export function isFileAcceptable(
   const fileType = getItemType(file);
   const acceptedFilesArray = Array.isArray(acceptedFileTypes)
     ? acceptedFileTypes
-    : acceptedFileTypes.split(",");
+    : acceptedFileTypes.split(',');
 
   return isValidMimeType(acceptedFilesArray as WildcardMimeType[], fileType);
 }
@@ -201,7 +192,7 @@ export function isFileAcceptable(
  * @returns {File[] | []} The files from the change target
  */
 function getFilesFromChangeEvent(
-  event: React.ChangeEvent<HTMLInputElement> | DragEvent
+  event: React.ChangeEvent<HTMLInputElement> | DragEvent,
 ) {
   const target = event.target as HTMLInputElement;
 
@@ -238,15 +229,15 @@ function getFilesFromDragEvent(event: DragEvent) {
  * @returns {File[]} The files from the event
  */
 export function getAllDragedFiles(
-  event: DragEvent | React.ChangeEvent<HTMLInputElement>
+  event: DragEvent | React.ChangeEvent<HTMLInputElement>,
 ): File[] {
-  if (["dragenter", "dragover", "drop"].includes(event.type)) {
+  if (['dragenter', 'dragover', 'drop'].includes(event.type)) {
     if (event.constructor === DragEvent) {
       return getFilesFromDragEvent(event) as File[];
     }
   }
 
-  if (event.type === "change") {
+  if (event.type === 'change') {
     return getFilesFromChangeEvent(event);
   }
 
@@ -263,7 +254,7 @@ export function cancelDefaultEvent(
   event:
     | React.DragEvent<HTMLDivElement>
     | DragEvent
-    | React.ChangeEvent<HTMLInputElement>
+    | React.ChangeEvent<HTMLInputElement>,
 ) {
   // Prevent default browser behavior
   event.preventDefault();
@@ -284,9 +275,9 @@ export function cancelDefaultEvent(
  */
 export function checkFileAcceptance(
   files: File[],
-  accept: string,
+  accept?: string,
   maxSize?: SizeUnit,
-  minSize?: SizeUnit
+  minSize?: SizeUnit,
 ): FileValidationResult {
   const acceptedFiles: File[] = [];
   const rejectedFiles: File[] = [];
@@ -304,7 +295,7 @@ export function checkFileAcceptance(
 
   Array.from(files).forEach(processFile);
 
-  return { files, acceptedFiles, rejectedFiles };
+  return {files, acceptedFiles, rejectedFiles};
 }
 
 /**
@@ -318,16 +309,16 @@ export function checkFileAcceptance(
  */
 export function getValidationErrors(
   rejectedFiles: File[],
-  acceptedTypes: string | string[],
-  minSize: SizeUnit,
-  maxSize: SizeUnit
+  acceptedTypes?: string | string[],
+  minSize?: SizeUnit,
+  maxSize?: SizeUnit,
 ): ValidationError[] {
   const errors: ValidationError[] = [];
 
   rejectedFiles.forEach((file) => {
     if (!isFileAcceptable(file, acceptedTypes)) {
       errors.push({
-        type: "INVALID_FILE_TYPE",
+        type: 'INVALID_FILE_TYPE',
         message: `${file.name} is not supported. File type must be ${acceptedTypes}.`,
       });
     }
@@ -347,7 +338,7 @@ export function getValidationErrors(
         message = `size must be no more than ${maxSize}`;
       }
       errors.push({
-        type: "INVALID_FILE_SIZE",
+        type: 'INVALID_FILE_SIZE',
         message,
       });
     }
@@ -365,6 +356,6 @@ export function getValidationErrors(
 export const isFile = (value: unknown): boolean => {
   return !!(
     value instanceof File ||
-    (value instanceof Blob && typeof value.name === "string")
+    (value instanceof Blob && typeof value.name === 'string')
   );
 };

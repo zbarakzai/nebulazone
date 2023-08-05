@@ -1,41 +1,70 @@
-import resolve from "@rollup/plugin-node-resolve";
-import commonjs from "@rollup/plugin-commonjs";
-import typescript from "@rollup/plugin-typescript";
-import dts from "rollup-plugin-dts";
-import postcss from "rollup-plugin-postcss";
-import terser from "@rollup/plugin-terser";
-import peerDepsExternal from "rollup-plugin-peer-deps-external";
+import {readFileSync} from 'fs';
+import * as path from 'path';
+import {nodeResolve} from '@rollup/plugin-node-resolve';
+import image from '@rollup/plugin-image';
+import commonjs from '@rollup/plugin-commonjs';
+import json from '@rollup/plugin-json';
+import {externals} from 'rollup-plugin-node-externals';
+import postcss from 'rollup-plugin-postcss';
+import {babel} from '@rollup/plugin-babel';
 
-// const packageJson = require("./package.json");
+import tailwindcss from 'tailwindcss';
+import autoprefixer from 'autoprefixer';
 
+const pkg = JSON.parse(
+  readFileSync(new URL('./package.json', import.meta.url).pathname, 'utf-8'),
+);
+
+const extensions = ['.js', '.jsx', '.ts', '.tsx'];
+
+function createRollupConfig({output, targets}) {
+  return {
+    input: './src/index.ts',
+    plugins: [
+      nodeResolve({extensions}),
+      externals({deps: true, packagePath: './package.json'}),
+      babel({
+        extensions,
+        rootMode: 'upward',
+        envName: 'production',
+        babelHelpers: 'bundled',
+        targets,
+        exclude: 'node_modules/**',
+      }),
+      image(),
+      commonjs(),
+      json({
+        compact: true,
+      }),
+      postcss({
+        extensions: ['.css'],
+        inject: true,
+        extract: false,
+        plugins: [tailwindcss, autoprefixer],
+      }),
+    ],
+    output,
+  };
+}
+
+/** @type {import('rollup').RollupOptions} */
 export default [
-  {
-    input: "src/index.ts",
+  createRollupConfig({
+    targets: ['node 16.0.0'],
     output: [
       {
-        file: "dist/cjs/index.js",
-        format: "cjs",
-        sourcemap: true,
+        format: 'cjs',
+        dir: path.dirname(pkg.main),
+        preserveModules: true,
+        entryFileNames: '[name].js',
+        exports: 'named',
       },
       {
-        file: "dist/esm/index.js",
-        format: "esm",
-        sourcemap: true,
+        format: 'esm',
+        dir: path.dirname(pkg.module),
+        preserveModules: true,
+        entryFileNames: '[name].js',
       },
     ],
-    plugins: [
-      peerDepsExternal(),
-      resolve(),
-      commonjs(),
-      typescript({ tsconfig: "./tsconfig.json" }),
-      postcss(),
-      terser(),
-    ],
-  },
-  {
-    input: "dist/esm/types/index.d.ts",
-    output: [{ file: "dist/index.d.ts", format: "esm" }],
-    plugins: [dts()],
-    external: [/\.css$/],
-  },
+  }),
 ];

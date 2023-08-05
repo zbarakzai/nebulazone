@@ -1,29 +1,30 @@
-import "../tailwind.css";
-import * as React from "react";
-import { useState, useCallback, useRef } from "react";
+import React from 'react';
+import {useState, useCallback, useRef} from 'react';
 
-import { useEventListener } from "../utils/useEvent";
-import { isBrowser } from "../utils/isBrowser";
+import '../tailwind.css';
+import {useEventListener} from '../utils/useEvent';
+import {isBrowser} from '../utils/isBrowser';
 import {
   cancelDefaultEvent,
   getAllDragedFiles,
   checkFileAcceptance,
   getValidationErrors,
-} from "../utils/fileValidation";
-import { getNumericAspectRatioFromString } from "../utils/crop";
-import { DropZoneContext } from "../DropZoneContext";
-import { Preview } from "./Preview";
+} from '../utils/fileValidation';
+import type {ValidationError} from '../utils/fileValidation';
+import {getNumericAspectRatioFromString} from '../utils/crop';
+import {DropZoneContext} from '../DropZoneContext';
+import {Preview} from './Preview';
 
 const DROPZONE_CLASSES = {
   default:
-    "inset-0 border-dashed rounded-md	flex flex-col justify-center border-2 min-h-[14.5rem]",
-  active: "absolute block opacity-100 ",
-  nonActive: "relative hidden opacity-0",
-  rejected: "bg-danger-800/10 border-danger-800",
-  accepted: "bg-primary-800/10 border-primary-800",
+    'inset-0 border-dashed rounded-md	flex flex-col justify-center border-2 min-h-[14.5rem]',
+  active: 'absolute block opacity-100 ',
+  nonActive: 'relative hidden opacity-0',
+  rejected: 'bg-danger-800/10 border-danger-800',
+  accepted: 'bg-primary-800/10 border-primary-800',
 };
 
-export type ByteUnits = "B" | "KB" | "MB" | "GB";
+export type ByteUnits = 'B' | 'KB' | 'MB' | 'GB';
 
 export interface DropzoneProps {
   /** Array of drop file paths  */
@@ -45,7 +46,7 @@ export interface DropzoneProps {
   /** The elements that will be rendered as children inside the dropzone. */
   children?: string | React.ReactNode;
   /** The layout style for the panel. */
-  panelLayout?: "integrated" | "compact" | "circle";
+  panelLayout?: 'integrated' | 'compact' | 'circle';
   /** The aspect ratio of the panel. */
   panelAspectRatio?: string | `${string}:${string}`;
   /** Callback invoked on click action. */
@@ -64,7 +65,8 @@ export interface DropzoneProps {
   onDrop?: (
     files: File[],
     acceptedFiles: File[],
-    rejectedFiles: File[]
+    rejectedFiles: File[],
+    errors: ValidationError[],
   ) => void;
 }
 
@@ -75,12 +77,12 @@ export function DropZone(props: DropzoneProps) {
     minFileSize,
     maxTotalFileSize,
     accept,
-    type = "file",
+    type = 'file',
     disabled = false,
     allowMultiple = true,
     onClick,
     children,
-    panelLayout,
+    panelLayout = 'integrated',
     panelAspectRatio,
     onDrop,
     onDropAccepted,
@@ -103,20 +105,20 @@ export function DropZone(props: DropzoneProps) {
 
       const fileList = getAllDragedFiles(event);
 
-      const { acceptedFiles, rejectedFiles } = checkFileAcceptance(
+      const {acceptedFiles, rejectedFiles} = checkFileAcceptance(
         fileList,
-        accept
+        accept,
       );
 
       const errors = getValidationErrors(
         rejectedFiles,
         accept,
         minFileSize,
-        maxFileSize
+        maxFileSize,
       );
 
       if (onDrop) {
-        onDrop(fileList, acceptedFiles, rejectedFiles);
+        onDrop(fileList, acceptedFiles, rejectedFiles, errors);
       }
 
       if (acceptedFiles.length && onDropAccepted) {
@@ -130,7 +132,7 @@ export function DropZone(props: DropzoneProps) {
       setHasError(false);
       setDragEnter(false);
     },
-    [disabled, onDrop, accept, onDropAccepted, onDropRejected]
+    [disabled, onDrop, accept, onDropAccepted, onDropRejected],
   );
 
   const handleDragEnter = useCallback(
@@ -139,7 +141,7 @@ export function DropZone(props: DropzoneProps) {
       if (disabled) return;
 
       const dragedFiles = getAllDragedFiles(event);
-      const { rejectedFiles } = checkFileAcceptance(dragedFiles, accept);
+      const {rejectedFiles} = checkFileAcceptance(dragedFiles, accept);
 
       if (rejectedFiles.length > 0) {
         draggedRejectedFiles.current = rejectedFiles;
@@ -147,7 +149,7 @@ export function DropZone(props: DropzoneProps) {
 
       if (onDragEnter) onDragEnter();
     },
-    [disabled, dragEnter, onDragEnter]
+    [disabled, dragEnter, onDragEnter],
   );
 
   const handleDragLeave = useCallback(
@@ -157,7 +159,7 @@ export function DropZone(props: DropzoneProps) {
 
       if (onDragLeave) onDragLeave();
     },
-    [disabled, onDragLeave]
+    [disabled, onDragLeave],
   );
 
   const handleDragOver = useCallback(
@@ -166,7 +168,7 @@ export function DropZone(props: DropzoneProps) {
       if (disabled) return;
       if (onDragOver) onDragOver;
     },
-    [disabled, onDragOver]
+    [disabled, onDragOver],
   );
 
   const handleDragEnterDropZone = useCallback(
@@ -179,7 +181,7 @@ export function DropZone(props: DropzoneProps) {
       }
       setDragEnter(true);
     },
-    []
+    [],
   );
 
   const handleDragLeaveDropZone = useCallback(
@@ -190,19 +192,19 @@ export function DropZone(props: DropzoneProps) {
       setDragEnter(false);
       setHasError(false);
     },
-    []
+    [],
   );
 
   const dragDropNode = isBrowser() ? document : targetNode.current;
 
-  useEventListener("dragover", handleDragOver, dragDropNode);
-  useEventListener("drop", handleDrop, dragDropNode);
-  useEventListener("dragenter", handleDragEnter, dragDropNode);
-  useEventListener("dragleave", handleDragLeave, dragDropNode);
+  useEventListener('dragover', handleDragOver, dragDropNode);
+  useEventListener('drop', handleDrop, dragDropNode);
+  useEventListener('dragenter', handleDragEnter, dragDropNode);
+  useEventListener('dragleave', handleDragLeave, dragDropNode);
 
   const classNames = `${DROPZONE_CLASSES.default} ${
     DROPZONE_CLASSES.accepted
-  } ${hasError && dragEnter ? DROPZONE_CLASSES.rejected : ""}`;
+  } ${hasError && dragEnter ? DROPZONE_CLASSES.rejected : ''}`;
 
   function handleClick(event: React.MouseEvent<HTMLElement>) {
     if (disabled) return;
@@ -210,13 +212,17 @@ export function DropZone(props: DropzoneProps) {
     if (inputRef.current) {
       inputRef.current.click();
     }
+
+    if (onClick) {
+      onClick(event);
+    }
   }
 
   const getPanelAspectRatio = () => {
     const isShapeCircle = /circle/.test(panelLayout);
     const aspectRatio = isShapeCircle
       ? 1
-      : getNumericAspectRatioFromString(panelAspectRatio);
+      : getNumericAspectRatioFromString(panelAspectRatio as string);
     return aspectRatio;
   };
 

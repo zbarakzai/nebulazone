@@ -1,5 +1,5 @@
-import { ByteUnits } from "components/DropZone";
-import { createContext, useContext } from "react";
+import {ByteUnits} from './components/DropZone';
+import {createContext, useContext} from 'react';
 
 export interface DropZoneContextType {
   /** Array of drop file paths  */
@@ -13,7 +13,7 @@ export interface DropZoneContextType {
   /** The maximum allowed file size in bytes. */
   maxFileSize?: `${number}${ByteUnits}`;
   /** The layout style for the panel. */
-  panelLayout?: "integrated" | "compact" | "circle";
+  panelLayout?: 'integrated' | 'compact' | 'circle';
   /** The aspect ratio of the panel. */
   panelAspectRatio: number | string;
   /** The minimum allowed file size in bytes. */
@@ -26,14 +26,14 @@ export interface DropZoneContextType {
   rootNode: React.RefObject<HTMLDivElement>;
 }
 
-export const DropZoneContext = createContext<DropZoneContextType>(null);
+export const DropZoneContext = createContext<DropZoneContextType | null>(null);
 
 export const useDropZoneContext = () => {
   const currentDropZoneContext = useContext(DropZoneContext);
 
   if (!currentDropZoneContext) {
     throw new Error(
-      "useDropZoneContext has to be used within <DropZoneContext.Provider>"
+      'useDropZoneContext has to be used within <DropZoneContext.Provider>',
     );
   }
 

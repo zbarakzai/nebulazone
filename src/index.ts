@@ -1,1 +1,1 @@
-export { DropZone } from "./components/DropZone";
+export {DropZone} from './components/DropZone';

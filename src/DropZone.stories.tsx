@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { DropZone } from "./index";
+import React from 'react';
+import {useState} from 'react';
+import {DropZone} from './index';
 
 export default {
   component: DropZone,
@@ -13,7 +14,7 @@ export function Default() {
   };
 
   return (
-    <div style={{ padding: "0" }}>
+    <div style={{padding: '0'}}>
       <DropZone
         onDropAccepted={onDropAccepted}
         accept="image/*"
@@ -24,8 +25,8 @@ export function Default() {
         {files.map((file, i) => (
           <div key={i}>
             <DropZone.Preview
-              structure={{ file, allowCrop: true }}
-              dimensions={{ imageCropAspectRatio: "1:1" }}
+              structure={{file, allowCrop: true}}
+              dimensions={{imageCropAspectRatio: '1:1'}}
               key={i}
             ></DropZone.Preview>
             <span>{file.name}</span>
