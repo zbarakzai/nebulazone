@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import {useState} from 'react';
 import {DropZone} from './index';
 
@@ -9,17 +9,27 @@ export default {
 export function Default() {
   const [files, setFiles] = useState<File[]>([]);
 
-  const onDropAccepted = (acceptedFiles: File[]) => {
-    setFiles([...files, ...acceptedFiles]);
-  };
+  const onDropAccepted = useCallback(
+    (acceptedFiles: File[]) =>
+      setFiles((files) => [...files, ...acceptedFiles]),
+    [],
+  );
+
+  const errorMarkupView = (
+    <div
+      className="absolute inset-0 z-50 w-full h-full bg-red-300/10"
+      data-testid="error"
+    >
+      Error!
+    </div>
+  );
 
   return (
     <div style={{padding: '0'}}>
       <DropZone
         onDropAccepted={onDropAccepted}
         accept="image/*"
-        type="image"
-        files={files}
+        errorMarkupView={errorMarkupView}
       >
         <div>List of all files</div>
         {files.map((file, i) => (
@@ -27,7 +37,7 @@ export function Default() {
             <DropZone.Preview
               structure={{file, allowCrop: true}}
               dimensions={{imageCropAspectRatio: '1:1'}}
-              key={i}
+              key={`${file.name}-${i}`}
             ></DropZone.Preview>
             <span>{file.name}</span>
           </div>

@@ -2,8 +2,6 @@ import {ByteUnits} from './components/DropZone';
 import {createContext, useContext} from 'react';
 
 export interface DropZoneContextType {
-  /** Array of drop file paths  */
-  files: File[];
   /** Allowed file types */
   accept?: string;
   /** The file type */

@@ -192,7 +192,7 @@ export function isFileAcceptable(
  * @returns {File[] | []} The files from the change target
  */
 function getFilesFromChangeEvent(
-  event: React.ChangeEvent<HTMLInputElement> | DragEvent,
+  event: React.DragEvent<HTMLElement> | React.ChangeEvent<HTMLInputElement>,
 ) {
   const target = event.target as HTMLInputElement;
 
@@ -209,7 +209,7 @@ function getFilesFromChangeEvent(
  * @param {DragEvent} event - The drag event
  * @returns {File[] | []} The files from the drag event
  */
-function getFilesFromDragEvent(event: DragEvent) {
+function getFilesFromDragEvent(event: React.DragEvent<HTMLElement>) {
   const dataTransfer = event.dataTransfer;
 
   if (dataTransfer?.files?.length) {
@@ -225,16 +225,17 @@ function getFilesFromDragEvent(event: DragEvent) {
 /**
  * Get the FileList from a drag or change event.
  *
- * @param {DragEvent | ChangeEvent} event - The drag or change event
+ * @param {React.DragEvent<HTMLElement> | React.ChangeEvent<HTMLInputElement>} event - The drag or change event
  * @returns {File[]} The files from the event
  */
 export function getAllDragedFiles(
-  event: DragEvent | React.ChangeEvent<HTMLInputElement>,
+  event: React.DragEvent<HTMLElement> | React.ChangeEvent<HTMLInputElement>,
 ): File[] {
   if (['dragenter', 'dragover', 'drop'].includes(event.type)) {
-    if (event.constructor === DragEvent) {
-      return getFilesFromDragEvent(event) as File[];
-    }
+    // Check if the event is a DragEvent
+    return getFilesFromDragEvent(
+      event as React.DragEvent<HTMLElement>,
+    ) as File[];
   }
 
   if (event.type === 'change') {
@@ -251,10 +252,7 @@ export function getAllDragedFiles(
  * @param event - The event object
  */
 export function cancelDefaultEvent(
-  event:
-    | React.DragEvent<HTMLDivElement>
-    | DragEvent
-    | React.ChangeEvent<HTMLInputElement>,
+  event: React.DragEvent<HTMLDivElement> | React.ChangeEvent<HTMLInputElement>,
 ) {
   // Prevent default browser behavior
   event.preventDefault();
@@ -323,7 +321,7 @@ export function getValidationErrors(
       });
     }
 
-    if (isValidFileSize(file, maxSize, minSize)) {
+    if (!isValidFileSize(file, maxSize, minSize)) {
       let message = ``;
 
       if (minSize && maxSize) {
@@ -337,6 +335,7 @@ export function getValidationErrors(
       if (maxSize && !minSize) {
         message = `size must be no more than ${maxSize}`;
       }
+
       errors.push({
         type: 'INVALID_FILE_SIZE',
         message,

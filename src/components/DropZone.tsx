@@ -15,20 +15,9 @@ import {getNumericAspectRatioFromString} from '../utils/crop';
 import {DropZoneContext} from '../DropZoneContext';
 import {Preview} from './Preview';
 
-const DROPZONE_CLASSES = {
-  default:
-    'inset-0 border-dashed rounded-md	flex flex-col justify-center border-2 min-h-[14.5rem]',
-  active: 'absolute block opacity-100 ',
-  nonActive: 'relative hidden opacity-0',
-  rejected: 'bg-danger-800/10 border-danger-800',
-  accepted: 'bg-primary-800/10 border-primary-800',
-};
-
 export type ByteUnits = 'B' | 'KB' | 'MB' | 'GB';
 
 export interface DropzoneProps {
-  /** Array of drop file paths  */
-  files: File[];
   /** Allowed file types */
   accept?: string;
   /** The file type */
@@ -47,6 +36,8 @@ export interface DropzoneProps {
   children?: string | React.ReactNode;
   /** The layout style for the panel. */
   panelLayout?: 'integrated' | 'compact' | 'circle';
+  /** Preview an error text or react element. */
+  errorMarkupView?: string | React.ReactElement | null;
   /** The aspect ratio of the panel. */
   panelAspectRatio?: string | `${string}:${string}`;
   /** Callback invoked on click action. */
@@ -70,45 +61,67 @@ export interface DropzoneProps {
   ) => void;
 }
 
-export function DropZone(props: DropzoneProps) {
-  const {
-    files,
-    maxFileSize,
-    minFileSize,
-    maxTotalFileSize,
-    accept,
-    type = 'file',
-    disabled = false,
-    allowMultiple = true,
-    onClick,
-    children,
-    panelLayout = 'integrated',
-    panelAspectRatio,
-    onDrop,
-    onDropAccepted,
-    onDropRejected,
-    onDragEnter,
-    onDragOver,
-    onDragLeave,
-  } = props;
-
+export function DropZone({
+  maxFileSize,
+  minFileSize,
+  maxTotalFileSize,
+  accept,
+  type = 'file',
+  disabled = false,
+  allowMultiple = true,
+  onClick,
+  children,
+  panelLayout = 'integrated',
+  errorMarkupView = null,
+  panelAspectRatio,
+  onDrop,
+  onDropAccepted,
+  onDropRejected,
+  onDragEnter,
+  onDragOver,
+  onDragLeave,
+}: DropzoneProps) {
   const [dragEnter, setDragEnter] = useState(false);
   const [hasError, setHasError] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const targetNode = useRef<HTMLDivElement>(null);
   const draggedRejectedFiles = useRef<File[]>([]);
 
-  const handleDrop = useCallback(
-    (event: DragEvent | React.ChangeEvent<HTMLInputElement>) => {
-      cancelDefaultEvent(event);
-      if (disabled) return;
+  // console.log('hasError', hasError);
 
+  const filterValidFiles = useCallback(
+    (
+      event:
+        | React.ChangeEvent<HTMLInputElement>
+        | React.DragEvent<HTMLInputElement>,
+    ) => {
       const fileList = getAllDragedFiles(event);
 
       const {acceptedFiles, rejectedFiles} = checkFileAcceptance(
         fileList,
         accept,
+        maxFileSize,
+        minFileSize,
       );
+
+      if (!allowMultiple && acceptedFiles.length > 0) {
+        const [acceptedFile, ...remainingFiles] = acceptedFiles;
+        rejectedFiles.push(...remainingFiles);
+
+        return {files: fileList, acceptedFiles: [acceptedFile], rejectedFiles};
+      }
+
+      return {files: fileList, acceptedFiles, rejectedFiles};
+    },
+    [accept, allowMultiple, draggedRejectedFiles],
+  );
+
+  const handleDrop = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      cancelDefaultEvent(event);
+      if (disabled) return;
+
+      const {files, acceptedFiles, rejectedFiles} = filterValidFiles(event);
 
       const errors = getValidationErrors(
         rejectedFiles,
@@ -118,7 +131,7 @@ export function DropZone(props: DropzoneProps) {
       );
 
       if (onDrop) {
-        onDrop(fileList, acceptedFiles, rejectedFiles, errors);
+        onDrop(files, acceptedFiles, rejectedFiles, errors);
       }
 
       if (acceptedFiles.length && onDropAccepted) {
@@ -131,17 +144,17 @@ export function DropZone(props: DropzoneProps) {
 
       setHasError(false);
       setDragEnter(false);
+      draggedRejectedFiles.current = [];
     },
     [disabled, onDrop, accept, onDropAccepted, onDropRejected],
   );
 
   const handleDragEnter = useCallback(
-    (event: DragEvent | React.ChangeEvent<HTMLInputElement>) => {
+    (event: React.DragEvent<HTMLInputElement>) => {
       cancelDefaultEvent(event);
       if (disabled) return;
 
-      const dragedFiles = getAllDragedFiles(event);
-      const {rejectedFiles} = checkFileAcceptance(dragedFiles, accept);
+      const {rejectedFiles} = filterValidFiles(event);
 
       if (rejectedFiles.length > 0) {
         draggedRejectedFiles.current = rejectedFiles;
@@ -153,7 +166,7 @@ export function DropZone(props: DropzoneProps) {
   );
 
   const handleDragLeave = useCallback(
-    (event: DragEvent | React.ChangeEvent<HTMLInputElement>) => {
+    (event: React.ChangeEvent<HTMLInputElement>) => {
       cancelDefaultEvent(event);
       if (disabled) return;
 
@@ -163,10 +176,10 @@ export function DropZone(props: DropzoneProps) {
   );
 
   const handleDragOver = useCallback(
-    (event: DragEvent | React.ChangeEvent<HTMLInputElement>) => {
+    (event: React.ChangeEvent<HTMLInputElement>) => {
       cancelDefaultEvent(event);
       if (disabled) return;
-      if (onDragOver) onDragOver;
+      if (onDragOver) onDragOver();
     },
     [disabled, onDragOver],
   );
@@ -181,7 +194,7 @@ export function DropZone(props: DropzoneProps) {
       }
       setDragEnter(true);
     },
-    [],
+    [draggedRejectedFiles, setHasError],
   );
 
   const handleDragLeaveDropZone = useCallback(
@@ -189,10 +202,14 @@ export function DropZone(props: DropzoneProps) {
       cancelDefaultEvent(event);
       if (disabled) return;
 
+      if (event.currentTarget.contains(event.relatedTarget as Node)) {
+        return;
+      }
+
       setDragEnter(false);
       setHasError(false);
     },
-    [],
+    [draggedRejectedFiles, setHasError],
   );
 
   const dragDropNode = isBrowser() ? document : targetNode.current;
@@ -201,10 +218,6 @@ export function DropZone(props: DropzoneProps) {
   useEventListener('drop', handleDrop, dragDropNode);
   useEventListener('dragenter', handleDragEnter, dragDropNode);
   useEventListener('dragleave', handleDragLeave, dragDropNode);
-
-  const classNames = `${DROPZONE_CLASSES.default} ${
-    DROPZONE_CLASSES.accepted
-  } ${hasError && dragEnter ? DROPZONE_CLASSES.rejected : ''}`;
 
   function handleClick(event: React.MouseEvent<HTMLElement>) {
     if (disabled) return;
@@ -227,7 +240,6 @@ export function DropZone(props: DropzoneProps) {
   };
 
   const contextValue = {
-    files,
     accept,
     type,
     allowMultiple,
@@ -243,13 +255,14 @@ export function DropZone(props: DropzoneProps) {
   return (
     <DropZoneContext.Provider value={contextValue}>
       <div
-        className={`${classNames} hover:cursor-pointer`}
+        className="dropzone h-full w-full relative inset-0 border-dashed rounded-md	flex flex-col justify-center border-2 min-h-[14.5rem] hover:cursor-pointer"
         onDragStart={cancelDefaultEvent}
         onDragEnter={handleDragEnterDropZone}
         onDragLeave={handleDragLeaveDropZone}
         ref={targetNode}
         onClick={handleClick}
         draggable="true"
+        data-testid="dropzone"
       >
         <span className="hidden">
           <input
@@ -262,6 +275,7 @@ export function DropZone(props: DropzoneProps) {
             autoComplete="off"
           />
         </span>
+        {hasError && errorMarkupView}
         {children}
       </div>
     </DropZoneContext.Provider>

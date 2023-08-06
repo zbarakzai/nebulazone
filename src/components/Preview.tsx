@@ -57,7 +57,7 @@ export function Preview({structure, dimensions}: PreviewProps) {
 
   return (
     <PreviewContext.Provider value={contextValue}>
-      <div id="panel" style={{height: itemHeight}}>
+      <div className="panel" style={{height: itemHeight}}>
         {!isPreviewDisallowed && itemHeight && <ImagePreview />}
       </div>
     </PreviewContext.Provider>
