@@ -9,11 +9,13 @@ export default defineConfig({
   css: {postcss: {plugins: []}},
   test: {
     include: ['./src/**/*.test.{ts,tsx}'],
+    setupFiles: ['./src/tests/setup.ts'],
     environment: 'jsdom',
     coverage: {
       include: ['src/**/*.{ts,tsx}'],
+      exclude: ['node_modules'],
       all: true,
       provider: 'v8',
-    },
+    }
   },
 });

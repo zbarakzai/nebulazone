@@ -1,6 +1,7 @@
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
 import {useDropZoneContext} from '../DropZoneContext';
+import type {Dimension} from '../PreviewContext';
 import {usePreviewContext} from '../PreviewContext';
 import {
   loadImage,
@@ -11,7 +12,6 @@ import {
   isPreviewableImage,
 } from './previewUtils';
 import {createWorker, BitmapWorker} from './worker';
-import type {PreviewProps} from '../components/Preview';
 import {getNumericAspectRatioFromString} from './crop';
 import {isFile} from './fileValidation';
 
@@ -185,7 +185,7 @@ export const useImageSize = (
  */
 export const useItemRescale = (
   file: File,
-  dimensions: PreviewProps['dimensions'],
+  dimensions: Dimension,
   rootNode: React.RefObject<HTMLElement>,
   imageSize: ImageSize | null,
 ): [number, React.Dispatch<React.SetStateAction<number>>] => {
@@ -248,7 +248,7 @@ export const useItemRescale = (
  */
 export const usePreviewChecks = (
   file: File,
-  input: PreviewProps['dimensions'],
+  input: Dimension,
 ): [boolean, React.Dispatch<React.SetStateAction<boolean>>, number] => {
   const [isPreviewDisabled, setPreviewDisabled] = useState(false);
   const [panelHeight, setPanelHeight] = useState(0);

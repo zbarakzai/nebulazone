@@ -8,7 +8,7 @@
     "build-storybook": "storybook build",
     "prettier": "prettier . --write",
     "lint": "eslint --cache .",
-    "test": "vitest"
+    "test": "vitest --threads=false"
   },
   "keywords": [
     "[\"react\"",
@@ -46,6 +46,7 @@
     "@tsconfig/strictest": "^2.0.1",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
+    "@types/testing-library__jest-dom": "^5.14.9",
     "@typescript-eslint/eslint-plugin": "^6.2.1",
     "autoprefixer": "^10.4.14",
     "eslint": "^8.46.0",

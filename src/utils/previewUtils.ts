@@ -9,24 +9,6 @@ export const transforms = {
   8: (width: number) => [0, -1, 1, 0, 0, width],
 };
 
-export const STRUCTURE_DEFAULTS = {
-  allowImagePreview: true,
-  allowCrop: false,
-  transparencyIndicator: 'grid',
-  file: null, // This may be updated based on the requirements
-};
-
-export const DIMENSION_DEFAULTS = {
-  imagePreviewMinHeight: 44,
-  imagePreviewMaxHeight: 256,
-  imagePreviewHeight: null,
-  imagePreviewMaxFileSize: null,
-  itemPanelAspectRatio: null,
-  panelAspectRatio: null,
-  imagePreviewZoomFactor: 2,
-  imageCropAspectRatio: '1:1',
-};
-
 export const getImageSizeFromBlob = (
   file: File,
 ): Promise<{width: number; height: number}> => {

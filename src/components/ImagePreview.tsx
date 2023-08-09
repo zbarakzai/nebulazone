@@ -43,7 +43,7 @@ const calculateClipSize = (
 
   // determine clip width and height
   let clipHeight =
-    fixedPreviewHeight !== null
+    fixedPreviewHeight !== undefined
       ? fixedPreviewHeight
       : Math.max(
           minPreviewHeight as number,

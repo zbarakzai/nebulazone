@@ -132,10 +132,21 @@ export function ClipView(props: ClipViewProps) {
   }, [canvaWrapperRef, bitmapRef, transformStyles]);
 
   return (
-    <div style={{width, height}} className="clip-view" ref={clipRef}>
+    <div
+      data-testid="clip-view"
+      style={{width, height}}
+      className="clip-view"
+      ref={clipRef}
+    >
       <div ref={canvaWrapperRef} className="canva-wrapper">
-        <div ref={bitmapRef} className="image-bitmap">
-          <canvas ref={canvasRef}></canvas>
+        <div
+          ref={bitmapRef}
+          className="flex flex-col items-center w-full image-bitmap"
+        >
+          <canvas
+            className="absolute max-h-full after:pb-[100%] after:w-full"
+            ref={canvasRef}
+          ></canvas>
         </div>
       </div>
     </div>

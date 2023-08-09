@@ -18,41 +18,81 @@ import {Preview} from './Preview';
 export type ByteUnits = 'B' | 'KB' | 'MB' | 'GB';
 
 export interface DropzoneProps {
-  /** Allowed file types */
+  /**
+   * Allowed file types
+   */
   accept?: string;
-  /** The file type */
+  /**
+    The file type
+   */
   type?: string;
-  /** Whether accept multiple file.  */
+  /**
+    The classess you can add.
+   */
+  className?: string;
+  /**
+   * Whether accept multiple file.
+   */
   allowMultiple?: boolean;
-  /** The maximum allowed file size in bytes. */
+  /**
+   * The maximum allowed file size in bytes.
+   */
   maxFileSize?: `${number}${ByteUnits}`;
-  /** The minimum allowed file size in bytes. */
+  /**
+   * The minimum allowed file size in bytes.
+   */
   minFileSize?: `${number}${ByteUnits}`;
-  /** The maximum allowed total file size in bytes. */
+  /**
+   * The maximum allowed total file size in bytes.
+   */
   maxTotalFileSize?: `${number}${ByteUnits}`;
-  /** Enables the disabled state. */
+  /**
+   * Enables the disabled state.
+   */
   disabled?: boolean;
-  /** The elements that will be rendered as children inside the dropzone. */
+  /**
+   * The elements that will be rendered as children inside the dropzone.
+   */
   children?: string | React.ReactNode;
-  /** The layout style for the panel. */
+  /**
+   * The layout style for the panel.
+   */
   panelLayout?: 'integrated' | 'compact' | 'circle';
-  /** Preview an error text or react element. */
+  /**
+   * Preview an error text or react element.
+   */
   errorMarkupView?: string | React.ReactElement | null;
-  /** The aspect ratio of the panel. */
+  /**
+   * The aspect ratio of the panel.
+   */
   panelAspectRatio?: string | `${string}:${string}`;
-  /** Callback invoked on click action. */
+  /**
+   * Callback invoked on click action.
+   */
   onClick?(event: React.MouseEvent<HTMLElement>): void;
-  /** Callback function that activates when the drop operation includes at least one accepted file. */
+  /**
+   * Callback function that activates when the drop operation includes at least one accepted file.
+   */
   onDropAccepted?: (acceptedFiles: File[]) => void;
-  /** Callback function triggered when the drop operation includes at least one file that was rejected. */
+  /**
+   * Callback function triggered when the drop operation includes at least one file that was rejected.
+   */
   onDropRejected?: (rejectedFiles: File[]) => void;
-  /** Callback triggered during file drag over the designated area. */
+  /**
+   * Callback triggered during file drag over the designated area.
+   */
   onDragOver?: () => void;
-  /** Callback triggered upon the entry of one or more files into the drag area. */
+  /**
+   * Callback triggered upon the entry of one or more files into the drag area.
+   */
   onDragEnter?: () => void;
-  /** Callback triggered when one or more files exit the drag area. */
+  /**
+   * Callback triggered when one or more files exit the drag area.
+   */
   onDragLeave?: () => void;
-  /** Callback triggered when files are droped. */
+  /**
+   * Callback triggered when files are droped.
+   */
   onDrop?: (
     files: File[],
     acceptedFiles: File[],
@@ -80,6 +120,7 @@ export function DropZone({
   onDragEnter,
   onDragOver,
   onDragLeave,
+  className,
 }: DropzoneProps) {
   const [dragEnter, setDragEnter] = useState(false);
   const [hasError, setHasError] = useState(false);
@@ -255,7 +296,7 @@ export function DropZone({
   return (
     <DropZoneContext.Provider value={contextValue}>
       <div
-        className="dropzone h-full w-full relative inset-0 border-dashed rounded-md	flex flex-col justify-center border-2 min-h-[14.5rem] hover:cursor-pointer"
+        className={`dropzone ${className}`}
         onDragStart={cancelDefaultEvent}
         onDragEnter={handleDragEnterDropZone}
         onDragLeave={handleDragLeaveDropZone}

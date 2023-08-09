@@ -1,8 +1,27 @@
 import {createContext, useContext} from 'react';
 
-import type {PreviewProps} from './components/Preview';
+export type Structure = {
+  allowImagePreview?: boolean;
+  transparencyIndicator?: 'grid' | string;
+  allowCrop: boolean;
+  file: File;
+};
 
-export type PreviewContextType = PreviewProps & {
+export type Dimension = {
+  imagePreviewMinHeight?: number;
+  imagePreviewMaxHeight?: number;
+  imagePreviewHeight?: number;
+  imagePreviewMaxFileSize?: number;
+  itemPanelAspectRatio?: string;
+  panelAspectRatio?: string;
+  imagePreviewZoomFactor?: number;
+  imageCropAspectRatio: `${string}:${string}`;
+  imagePreviewUpscale?: boolean;
+};
+
+export type PreviewContextType = {
+  structure: Structure;
+  dimensions: Dimension;
   /** The height of the image */
   imageHeight: number;
   /** The width of the image */
