@@ -16,6 +16,6 @@ export default defineConfig({
       exclude: ['node_modules'],
       all: true,
       provider: 'v8',
-    }
+    },
   },
 });

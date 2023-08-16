@@ -10,10 +10,7 @@ module.exports = {
       version: '16.8',
     },
   },
-  ignorePatterns: [
-    'node_modules',
-    'dist',
-  ],
+  ignorePatterns: ['node_modules', 'dist'],
   rules: {
     'no-process-env': 'off',
     'func-style': 'off',
@@ -41,5 +38,5 @@ module.exports = {
     'jsx-a11y/click-events-have-key-events': 'off',
     'jsx-a11y/no-noninteractive-element-interactions': 'off',
     'jsx-a11y/no-noninteractive-element-to-interactive-role': 'off',
-  }
+  },
 };
