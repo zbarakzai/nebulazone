@@ -1,13 +1,6 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 
-import {useDropZoneContext} from '../DropZoneContext';
-import {ImagePreview} from './ImagePreview';
-import {PreviewContext} from '../PreviewContext';
-import {
-  useImageSize,
-  useItemRescale,
-  usePreviewChecks,
-} from '../utils/usePreview';
+import {useImageLoader, usePreviewChecks} from '../utils/usePreview';
 
 export interface PreviewProps {
   /**
@@ -80,9 +73,6 @@ export interface PreviewProps {
 }
 
 export function Preview({
-  allowImagePreview = true,
-  transparencyIndicator = 'grid',
-  allowCrop = false,
   file,
   imagePreviewMinHeight = 44,
   imagePreviewMaxHeight = 256,
@@ -94,15 +84,6 @@ export function Preview({
   imageCropAspectRatio = '1:1',
   imagePreviewUpscale = false,
 }: PreviewProps) {
-  const dropZoneContext = useDropZoneContext();
-
-  const structureData = {
-    allowImagePreview,
-    transparencyIndicator,
-    allowCrop,
-    file,
-  };
-
   const dimensionsData = {
     imagePreviewMinHeight,
     imagePreviewMaxHeight,
@@ -115,29 +96,21 @@ export function Preview({
     imagePreviewUpscale,
   };
 
-  const [imageSize] = useImageSize(file);
   const [isPreviewDisallowed] = usePreviewChecks(file, dimensionsData);
+  const [image, loadImage] = useImageLoader();
 
-  const [itemHeight] = useItemRescale(
-    file,
-    dimensionsData,
-    dropZoneContext.rootNode,
-    imageSize,
-  );
-
-  const contextValue = {
-    dimensions: dimensionsData,
-    structure: structureData,
-    imageHeight: imageSize?.height || 0,
-    imageWidth: imageSize?.width || 0,
-    viewHeight: itemHeight,
-  };
+  useEffect(() => {
+    loadImage(file);
+  }, [file]);
 
   return (
-    <PreviewContext.Provider value={contextValue}>
-      <div data-testid="panel" className="panel" style={{height: itemHeight}}>
-        {!isPreviewDisallowed && itemHeight && <ImagePreview />}
-      </div>
-    </PreviewContext.Provider>
+    <div
+      data-testid="panel"
+      className="relative flex items-center justify-center w-full min-h-full h-[256px]"
+    >
+      {!isPreviewDisallowed && (
+        <img className="absolute max-h-full" src={image} />
+      )}
+    </div>
   );
 }

@@ -290,30 +290,6 @@ describe('<DropZone />', () => {
       },
     ]);
   });
-
-  it('render the error view markup on dragenter event.', async () => {
-    const errorMarkupView = <div data-testid="error">Error!</div>;
-
-    const {getByTestId, queryByTestId} = render(
-      <DropZone
-        accept="image/*"
-        onDrop={spy}
-        maxFileSize="1MB"
-        errorMarkupView={errorMarkupView}
-      />,
-    );
-
-    const enterEvent = createFileEvent('dragenter', rejectedFiles);
-    fireEvent(document, enterEvent);
-    fireEvent(getByTestId('dropzone'), enterEvent);
-
-    expect(getByTestId('error')).not.toBeNull()
-
-    const leaveEvent = createFileEvent('dragleave', rejectedFiles);
-    fireEvent(getByTestId('dropzone'), leaveEvent);
-
-    expect(queryByTestId('error')).toBeNull()
-  });
 });
 
 function createFileEvent(name: string, files: FileType[]) {

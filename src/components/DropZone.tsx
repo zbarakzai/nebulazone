@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {useState, useCallback, useRef} from 'react';
 
 import '../tailwind.css';
@@ -11,7 +11,6 @@ import {
   getValidationErrors,
 } from '../utils/fileValidation';
 import type {ValidationError} from '../utils/fileValidation';
-import {getNumericAspectRatioFromString} from '../utils/crop';
 import {DropZoneContext} from '../DropZoneContext';
 import {Preview} from './Preview';
 
@@ -59,10 +58,6 @@ export interface DropzoneProps {
    */
   panelLayout?: 'integrated' | 'compact' | 'circle';
   /**
-   * Preview an error text or react element.
-   */
-  errorMarkupView?: string | React.ReactElement | null;
-  /**
    * The aspect ratio of the panel.
    */
   panelAspectRatio?: string | `${string}:${string}`;
@@ -99,6 +94,14 @@ export interface DropzoneProps {
     rejectedFiles: File[],
     errors: ValidationError[],
   ) => void;
+  /**
+   * Set error true when the internal hasError changes value.
+   */
+  setError?: React.Dispatch<React.SetStateAction<boolean>>;
+  /**
+   * Set error true when the internal hasError changes value.
+   */
+  setFileEnterZone?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export function DropZone({
@@ -112,8 +115,6 @@ export function DropZone({
   onClick,
   children,
   panelLayout = 'integrated',
-  errorMarkupView = null,
-  panelAspectRatio,
   onDrop,
   onDropAccepted,
   onDropRejected,
@@ -121,6 +122,8 @@ export function DropZone({
   onDragOver,
   onDragLeave,
   className,
+  setError,
+  setFileEnterZone,
 }: DropzoneProps) {
   const [dragEnter, setDragEnter] = useState(false);
   const [hasError, setHasError] = useState(false);
@@ -128,7 +131,17 @@ export function DropZone({
   const targetNode = useRef<HTMLDivElement>(null);
   const draggedRejectedFiles = useRef<File[]>([]);
 
-  // console.log('hasError', hasError);
+  useEffect(() => {
+    if (setError) {
+      setError(hasError);
+    }
+  }, [hasError]);
+
+  useEffect(() => {
+    if (setFileEnterZone) {
+      setFileEnterZone(dragEnter);
+    }
+  }, [dragEnter]);
 
   const filterValidFiles = useCallback(
     (
@@ -203,7 +216,7 @@ export function DropZone({
 
       if (onDragEnter) onDragEnter();
     },
-    [disabled, dragEnter, onDragEnter],
+    [disabled, dragEnter, onDragEnter, filterValidFiles],
   );
 
   const handleDragLeave = useCallback(
@@ -229,6 +242,16 @@ export function DropZone({
     (event: React.DragEvent<HTMLDivElement>) => {
       cancelDefaultEvent(event);
       if (disabled) return;
+
+      const {rejectedFiles} = filterValidFiles(
+        event as
+          | React.ChangeEvent<HTMLInputElement>
+          | React.DragEvent<HTMLInputElement>,
+      );
+
+      if (rejectedFiles.length > 0) {
+        draggedRejectedFiles.current = rejectedFiles;
+      }
 
       if (draggedRejectedFiles.current.length > 0) {
         setHasError(true);
@@ -272,14 +295,6 @@ export function DropZone({
     }
   }
 
-  const getPanelAspectRatio = () => {
-    const isShapeCircle = /circle/.test(panelLayout);
-    const aspectRatio = isShapeCircle
-      ? 1
-      : getNumericAspectRatioFromString(panelAspectRatio as string);
-    return aspectRatio;
-  };
-
   const contextValue = {
     accept,
     type,
@@ -289,7 +304,6 @@ export function DropZone({
     minFileSize,
     maxTotalFileSize,
     disabled,
-    panelAspectRatio: getPanelAspectRatio(),
     rootNode: targetNode,
   };
 
@@ -316,7 +330,6 @@ export function DropZone({
             autoComplete="off"
           />
         </span>
-        {hasError && errorMarkupView}
         {children}
       </div>
     </DropZoneContext.Provider>

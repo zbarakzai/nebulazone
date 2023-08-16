@@ -7,6 +7,7 @@ import json from '@rollup/plugin-json';
 import {externals} from 'rollup-plugin-node-externals';
 import postcss from 'rollup-plugin-postcss';
 import {babel} from '@rollup/plugin-babel';
+import {URL} from 'url';
 
 import tailwindcss from 'tailwindcss';
 import autoprefixer from 'autoprefixer';

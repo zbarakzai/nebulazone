@@ -12,8 +12,6 @@ export interface DropZoneContextType {
   maxFileSize?: `${number}${ByteUnits}`;
   /** The layout style for the panel. */
   panelLayout?: 'integrated' | 'compact' | 'circle';
-  /** The aspect ratio of the panel. */
-  panelAspectRatio: number | string;
   /** The minimum allowed file size in bytes. */
   minFileSize?: `${number}${ByteUnits}`;
   /** The maximum allowed total file size in bytes. */
