@@ -1,9 +1,10 @@
 {
   "name": "nebulazone",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "NebulaZone is a beautiful and feature-rich React Dropzone library that enables seamless file uploads with a touch of cosmic elegance. Embrace the beauty of the universe as you effortlessly handle file uploads in your React applications.",
   "scripts": {
     "build:js": "rollup -c",
+    "build:types": "tsc -b",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "prettier": "prettier . --write",
@@ -19,6 +20,10 @@
   ],
   "author": "Zakiullah Barakzai",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zbarakzai/nebulazone.git"
+  },
   "devDependencies": {
     "@babel/core": "^7.22.9",
     "@babel/plugin-transform-runtime": "^7.22.9",
@@ -81,5 +86,5 @@
   "files": [
     "dist/"
   ],
-  "types": "dist/index.d.ts"
+  "types": "dist/ts/src/index.d.ts"
 }

@@ -8,6 +8,7 @@ import {externals} from 'rollup-plugin-node-externals';
 import postcss from 'rollup-plugin-postcss';
 import {babel} from '@rollup/plugin-babel';
 import {URL} from 'url';
+import terser from '@rollup/plugin-terser';
 
 import tailwindcss from 'tailwindcss';
 import autoprefixer from 'autoprefixer';
@@ -23,7 +24,7 @@ function createRollupConfig({output, targets}) {
     input: './src/index.ts',
     plugins: [
       nodeResolve({extensions}),
-      externals({deps: true, packagePath: './package.json'}),
+      externals({deps: true, peerDeps: true, packagePath: './package.json'}),
       babel({
         extensions,
         rootMode: 'upward',
@@ -43,6 +44,7 @@ function createRollupConfig({output, targets}) {
         extract: false,
         plugins: [tailwindcss, autoprefixer],
       }),
+      terser(),
     ],
     output,
   };

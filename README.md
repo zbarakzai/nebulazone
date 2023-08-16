@@ -18,5 +18,5 @@ NebulaZone is a beautiful and feature-rich React Dropzone library that enables s
 To install NebulaZone in your React project, simply use npm or yarn:
 
 ```bash
-npm install nebula-zone --save
+npm install nebulazone --save
 ```

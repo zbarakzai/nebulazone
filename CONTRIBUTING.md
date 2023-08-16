@@ -8,11 +8,11 @@ We welcome contributions from the community to help make NebulaZone even better.
 
 ### Reporting Issues
 
-If you find any issues or bugs in NebulaZone, please check the [existing issues](https://github.com/your-username/nebula-zone/issues) to see if the problem has already been reported. If not, feel free to open a new issue and provide detailed information about the problem, including steps to reproduce it and your environment.
+If you find any issues or bugs in NebulaZone, please check the [existing issues](https://github.com/zbarakzai/nebulazone/issues) to see if the problem has already been reported. If not, feel free to open a new issue and provide detailed information about the problem, including steps to reproduce it and your environment.
 
 ### Feature Requests
 
-If you have a feature request or an idea to enhance NebulaZone, please open an [issue](https://github.com/your-username/nebula-zone/issues) to discuss it. We value your feedback and will be happy to hear your suggestions.
+If you have a feature request or an idea to enhance NebulaZone, please open an [issue](https://github.com/zbarakzai/nebulazone/issues) to discuss it. We value your feedback and will be happy to hear your suggestions.
 
 ### Pull Requests
 
