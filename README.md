@@ -1,6 +1,6 @@
 # NebulaZone - React Dropzone Library
 
-![NebulaZone Banner](banner.jpg)
+<img src="banner.jpg" alt="NebulaZone Banner" width="150" height="150" style="border-radius: 5px;">
 
 NebulaZone is a beautiful and feature-rich React Dropzone library that enables seamless file uploads with a touch of cosmic elegance. Embrace the beauty of the universe as you effortlessly handle file uploads in your React applications.
 
