@@ -1,4 +1,4 @@
-# NebulaZone - React Dropzone Library
+# NebulaZone - React Dropzone Component
 
 <img src="banner.jpg" alt="NebulaZone Banner" width="150" height="150" style="border-radius: 5px;">
 

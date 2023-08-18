@@ -3,6 +3,8 @@
   "version": "0.0.2",
   "description": "NebulaZone is a beautiful and feature-rich React Dropzone library that enables seamless file uploads with a touch of cosmic elegance. Embrace the beauty of the universe as you effortlessly handle file uploads in your React applications.",
   "scripts": {
+    "build": "run-s clean build:types build:js",
+    "clean": "rm -rf dist",
     "build:js": "rollup -c",
     "build:types": "tsc -b",
     "storybook": "storybook dev -p 6006",
@@ -60,6 +62,7 @@
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-react": "^7.33.1",
     "jsdom": "^22.1.0",
+    "npm-run-all": "^4.1.5",
     "postcss": "^8.4.27",
     "prettier": "^3.0.1",
     "rollup": "^3.26.3",
