@@ -1,6 +1,6 @@
 {
   "name": "nebulazone",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "NebulaZone is a beautiful and feature-rich React Dropzone library that enables seamless file uploads with a touch of cosmic elegance. Embrace the beauty of the universe as you effortlessly handle file uploads in your React applications.",
   "scripts": {
     "build": "run-s clean build:types build:js",
