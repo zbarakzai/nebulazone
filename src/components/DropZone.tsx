@@ -22,27 +22,23 @@ export interface DropzoneProps {
    */
   accept?: string;
   /**
-    The file type
-   */
-  type?: string;
-  /**
     The classess you can add.
    */
   className?: string;
   /**
-   * Whether accept multiple file.
+   * Is multi-file acceptance enabled
    */
   allowMultiple?: boolean;
   /**
-   * The maximum allowed file size in bytes.
+   * The maximum allowed file size.
    */
   maxFileSize?: `${number}${ByteUnits}`;
   /**
-   * The minimum allowed file size in bytes.
+   * The minimum allowed file size.
    */
   minFileSize?: `${number}${ByteUnits}`;
   /**
-   * The maximum allowed total file size in bytes.
+   * The maximum allowed total file size.
    */
   maxTotalFileSize?: `${number}${ByteUnits}`;
   /**
@@ -109,7 +105,6 @@ export function DropZone({
   minFileSize,
   maxTotalFileSize,
   accept,
-  type = 'file',
   disabled = false,
   allowMultiple = true,
   onClick,
@@ -297,7 +292,6 @@ export function DropZone({
 
   const contextValue = {
     accept,
-    type,
     allowMultiple,
     maxFileSize,
     panelLayout,
