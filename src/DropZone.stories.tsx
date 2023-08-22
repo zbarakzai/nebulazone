@@ -21,7 +21,7 @@ export function Default() {
   );
 
   return (
-    <div style={{padding: '0'}}>
+    <div>
       <DropZone onDropAccepted={onDropAccepted} accept="image/*">
         <div>List of all files</div>
         {files.map((file, i) => (
@@ -88,7 +88,7 @@ export function WithErrorMessage() {
   );
 
   return (
-    <div style={{padding: '0'}}>
+    <div>
       <div className="mb-4">
         {errorMessage && errorMessage?.length > 0 && (
           <ErrorAlerts title="Error adding this file:" errors={errorMessage} />
@@ -158,7 +158,7 @@ export function WithAcceptMessage() {
   );
 
   return (
-    <div style={{padding: '0'}}>
+    <div>
       <DropZone
         accept="image/*"
         className={`relative border-dashed rounded-md border-2 min-h-[14.5rem] hover:cursor-pointer p-2 ${
@@ -207,7 +207,9 @@ export function WithGridLayout() {
               <div
                 className={`${
                   i === 0 && 'col-start-1 col-span-2 row-start-1 row-span-2'
-                } border border-gray-300 rounded-lg p-1`}
+                } border border-gray-300 rounded-lg p-1 ${
+                  i !== 0 ? 'max-h-[125px]' : ''
+                }`}
                 key={i}
               >
                 <div className="relative flex items-center justify-center w-full h-full p-0 m-0">

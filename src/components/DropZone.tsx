@@ -60,7 +60,10 @@ export interface DropzoneProps {
   /**
    * Callback invoked on click action.
    */
-  onClick?(event: React.MouseEvent<HTMLElement>): void;
+  onClick?(
+    event: React.MouseEvent<HTMLElement>,
+    inputRef: React.RefObject<HTMLInputElement>,
+  ): void;
   /**
    * Callback function that activates when the drop operation includes at least one accepted file.
    */
@@ -278,16 +281,16 @@ export function DropZone({
   useEventListener('dragenter', handleDragEnter, dragDropNode);
   useEventListener('dragleave', handleDragLeave, dragDropNode);
 
-  function handleClick(event: React.MouseEvent<HTMLElement>) {
-    if (disabled) return;
-
+  const openFileDialog = () => {
     if (inputRef.current) {
       inputRef.current.click();
     }
+  };
 
-    if (onClick) {
-      onClick(event);
-    }
+  function handleClick(event: React.MouseEvent<HTMLElement>) {
+    if (disabled) return;
+
+    onClick ? onClick(event, inputRef) : openFileDialog();
   }
 
   const contextValue = {
