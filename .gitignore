@@ -31,3 +31,5 @@ yarn-error.log*
 .contentlayer
 tsconfig.tsbuildinfo
 storybook-static
+
+.vscode
