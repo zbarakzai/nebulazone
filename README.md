@@ -1,4 +1,6 @@
-# NebulaZone - React Dropzone Component
+<p align="center">
+    NebulaZone
+</p>
 
 <p align="center">
     <img src="banner.png" alt="NebulaZone Banner" width="150" height="150" style="border-radius: 5px;">
