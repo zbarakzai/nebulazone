@@ -1,6 +1,6 @@
-<p align="center">
+<h1 align="center">
     NebulaZone
-</p>
+</h1>
 
 <p align="center">
     <img src="banner.png" alt="NebulaZone Banner" width="150" height="150" style="border-radius: 5px;">
