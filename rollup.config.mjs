@@ -1,17 +1,12 @@
 import {readFileSync} from 'fs';
 import * as path from 'path';
 import {nodeResolve} from '@rollup/plugin-node-resolve';
-import image from '@rollup/plugin-image';
 import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 import {externals} from 'rollup-plugin-node-externals';
-import postcss from 'rollup-plugin-postcss';
 import {babel} from '@rollup/plugin-babel';
 import {URL} from 'url';
 import terser from '@rollup/plugin-terser';
-
-import tailwindcss from 'tailwindcss';
-import autoprefixer from 'autoprefixer';
 
 const pkg = JSON.parse(
   readFileSync(new URL('./package.json', import.meta.url).pathname, 'utf-8'),
@@ -33,16 +28,9 @@ function createRollupConfig({output, targets}) {
         targets,
         exclude: 'node_modules/**',
       }),
-      image(),
       commonjs(),
       json({
         compact: true,
-      }),
-      postcss({
-        extensions: ['.css'],
-        inject: true,
-        extract: false,
-        plugins: [tailwindcss, autoprefixer],
       }),
       terser(),
     ],

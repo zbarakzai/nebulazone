@@ -2,6 +2,8 @@ import React, {useCallback} from 'react';
 import {useState} from 'react';
 import {DropZone} from './index';
 
+import './style.css';
+
 export default {
   component: DropZone,
 };
@@ -22,7 +24,11 @@ export function Default() {
 
   return (
     <div>
-      <DropZone onDropAccepted={onDropAccepted} accept="image/*">
+      <DropZone
+        className="border-dashed p-24 flex items-center justify-center"
+        onDropAccepted={onDropAccepted}
+        accept="image/*"
+      >
         <div>List of all files</div>
         {files.map((file, i) => (
           <div key={i}>
@@ -62,7 +68,7 @@ export function WithErrorMessage() {
 
   const errorMarkupView = (
     <div
-      className="absolute flex space-y-2 flex-col justify-center items-center inset-0 z-50 w-full h-full bg-[rgba(232,76,133,.1)] text-red-400"
+      className="absolute flex space-y-2 flex-col justify-center items-center inset-0 z-50 w-full h-full bg-err text-red-400"
       data-testid="error"
     >
       <svg
@@ -71,7 +77,7 @@ export function WithErrorMessage() {
         viewBox="0 0 24 24"
         strokeWidth={1.5}
         stroke="currentColor"
-        className="w-6 h-6 text-[#e84c85]"
+        className="w-6 h-6 svg-err"
       >
         <path
           strokeLinecap="round"
@@ -80,7 +86,7 @@ export function WithErrorMessage() {
         />
       </svg>
 
-      <h3 className="text-sm font-medium text-[#e84c85]">
+      <h3 className="text-sm font-medium svg-err">
         Invalid file type. Please upload an image with one of the following
         extensions: .jpg, .jpeg, .png, .gif, .bmp.
       </h3>
@@ -96,8 +102,8 @@ export function WithErrorMessage() {
       </div>
       <DropZone
         accept="image/*"
-        className={`relative border-dashed rounded-md border-2 min-h-[14.5rem] hover:cursor-pointer p-2 ${
-          error && 'border-[#e84c85]'
+        className={`relative border-dashed rounded-md border-2 min-h-14 hover:cursor-pointer p-2 ${
+          error && 'svg-err'
         }`}
         onDropAccepted={onDropAccepted}
         onDrop={onDrop}
@@ -133,7 +139,7 @@ export function WithAcceptMessage() {
 
   const acceptMarkupView = (
     <div
-      className="absolute flex space-y-2 flex-col justify-center items-center inset-0 z-50 w-full h-full bg-[#6078ff]/10 text-[#6078ff]"
+      className="absolute flex space-y-2 flex-col justify-center items-center inset-0 z-50 w-full h-full bg-blue-opacity text-blue-custom"
       data-testid="error"
     >
       <svg
@@ -142,7 +148,7 @@ export function WithAcceptMessage() {
         viewBox="0 0 24 24"
         strokeWidth={1.5}
         stroke="currentColor"
-        className="w-6 h-6 text-[#6078ff]"
+        className="w-6 h-6 text-blue-custom"
       >
         <path
           strokeLinecap="round"
@@ -161,9 +167,9 @@ export function WithAcceptMessage() {
     <div>
       <DropZone
         accept="image/*"
-        className={`relative border-dashed rounded-md border-2 min-h-[14.5rem] hover:cursor-pointer p-2 ${
-          error && 'border-[#e84c85]'
-        } ${!error && dragEnter && 'border-[#6078ff]'}`}
+        className={`relative border-dashed rounded-md border-2 min-h-14 hover:cursor-pointer p-2 ${
+          error && 'border-red'
+        } ${!error && dragEnter && '.border-blue'}`}
         onDropAccepted={onDropAccepted}
         setError={setError}
         setFileEnterZone={SetDragEnter}
@@ -197,18 +203,18 @@ export function WithGridLayout() {
   return (
     <div className="p-6">
       <DropZone
-        className="relative border-dashed rounded-md border-2 min-h-[14.5rem] hover:cursor-pointer p-2"
+        className="relative border-dashed rounded-md border-2 min-h-14 hover:cursor-pointer p-2"
         onDropAccepted={onDropAccepted}
         accept="image/*"
       >
         <div className="relative h-full">
-          <div className="grid grid-cols-4 gap-2">
+          <div className="grid-cols-4-gap-2">
             {files.map((file, i) => (
               <div
                 className={`${
-                  i === 0 && 'col-start-1 col-span-2 row-start-1 row-span-2'
+                  i === 0 && 'grid-item-custom'
                 } border border-gray-300 rounded-lg p-1 ${
-                  i !== 0 ? 'max-h-[125px]' : ''
+                  i === 0 ? 'h-full' : 'max-h-50'
                 }`}
                 key={i}
               >
@@ -231,7 +237,7 @@ export function WithGridLayout() {
 
 function ErrorAlerts({title, errors}: {title: string; errors: string[]}) {
   return (
-    <div className="bg-[rgba(232,76,133,.1)] rounded-md p-6">
+    <div className="bg-alert rounded-md p-6">
       <div className="flex">
         <div className="flex-shrink-0">
           <svg
@@ -240,7 +246,7 @@ function ErrorAlerts({title, errors}: {title: string; errors: string[]}) {
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="w-6 h-6 text-[#e84c85]"
+            className="w-6 h-6 svg-err"
           >
             <path
               strokeLinecap="round"
@@ -250,8 +256,8 @@ function ErrorAlerts({title, errors}: {title: string; errors: string[]}) {
           </svg>
         </div>
         <div className="ml-4">
-          <div className="text-sm font-medium text-[#e84c85]">{title}</div>
-          <div className="mt-2 text-sm text-[#e84c85]">
+          <div className="text-sm font-medium svg-err">{title}</div>
+          <div className="mt-2 text-sm svg-err">
             <ul className="space-y-1 pl-4 list-disc list-inside">
               {errors.map((err, i) => (
                 <li key={`${i}-${err}`}>{err}</li>

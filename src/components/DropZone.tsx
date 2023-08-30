@@ -1,7 +1,6 @@
 import React, {useEffect} from 'react';
 import {useState, useCallback, useRef} from 'react';
 
-import '../tailwind.css';
 import {useEventListener} from '../utils/useEvent';
 import {isBrowser} from '../utils/isBrowser';
 import {
@@ -307,7 +306,7 @@ export function DropZone({
   return (
     <DropZoneContext.Provider value={contextValue}>
       <div
-        className={`dropzone ${className}`}
+        className={`${className}`}
         onDragStart={cancelDefaultEvent}
         onDragEnter={handleDragEnterDropZone}
         onDragLeave={handleDragLeaveDropZone}
@@ -316,7 +315,7 @@ export function DropZone({
         draggable="true"
         data-testid="dropzone"
       >
-        <span className="hidden">
+        <span style={{display: 'none'}}>
           <input
             accept={accept}
             disabled={disabled}

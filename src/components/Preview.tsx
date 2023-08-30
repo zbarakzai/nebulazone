@@ -70,6 +70,10 @@ export interface PreviewProps {
    * Defaults to 'false' if not provided.
    */
   imagePreviewUpscale?: boolean;
+  /**
+    The classess you can add.
+   */
+  className?: string;
 }
 
 export function Preview({
@@ -83,6 +87,7 @@ export function Preview({
   imagePreviewZoomFactor = 2,
   imageCropAspectRatio = '1:1',
   imagePreviewUpscale = false,
+  className,
 }: PreviewProps) {
   const dimensionsData = {
     imagePreviewMinHeight,
@@ -103,13 +108,20 @@ export function Preview({
     loadImage(file);
   }, [file]);
 
+  const panelStyle: React.CSSProperties = {
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    minHeight: '100%',
+    height: '256px',
+  };
+
   return (
-    <div
-      data-testid="panel"
-      className="relative flex items-center justify-center w-full min-h-full h-[256px]"
-    >
+    <div data-testid="panel" style={panelStyle} className={`${className}`}>
       {!isPreviewDisallowed && (
-        <img className="absolute max-h-full" src={image} />
+        <img style={{position: 'absolute', maxHeight: '100%'}} src={image} />
       )}
     </div>
   );

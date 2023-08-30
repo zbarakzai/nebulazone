@@ -1,0 +1,198 @@
+.absolute {
+  position: absolute;
+}
+
+.flex {
+  display: flex;
+}
+
+.space-y-2 > * + * {
+  margin-top: 0.5rem; /* Equivalent to the space-y-2 utility */
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.inset-0 {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.z-50 {
+  z-index: 50;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.bg-err {
+  background-color: rgba(232, 76, 133, 0.1);
+}
+
+.text-red-400 {
+  color: #f56565; /* This is an approximation. For exact color values, refer to Tailwind's default configuration */
+}
+
+.border-red {
+  border: dashed 2px #e84c85;
+}
+
+.border-blue {
+  border: dashed 2px #6078ff;
+}
+
+.w-6 {
+  width: 1.5rem;
+}
+
+.h-6 {
+  height: 1.5rem;
+}
+
+.svg-err {
+  color: #e84c85;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+.relative {
+  position: relative;
+}
+
+.border-dashed {
+  border: dashed 2px #9ca3af;
+}
+
+.rounded-md {
+  border-radius: 0.375rem; /* 6px */
+}
+
+.p-24 {
+  padding: 6rem;
+}
+
+.min-h-14 {
+  min-height: 14.5rem; /* 232px */
+}
+
+.hover\:cursor-pointer:hover {
+  cursor: pointer;
+}
+
+.p-2 {
+  padding: 0.5rem; /* 8px */
+}
+
+.bg-alert {
+  background-color: rgba(232, 76, 133, 0.1);
+}
+
+.rounded-md {
+  border-radius: 0.375rem;
+}
+
+.p-6 {
+  padding: 1.5rem;
+}
+
+.flex-shrink-0 {
+  flex-shrink: 0;
+}
+
+.space-y-1 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.25rem * var(--tw-space-y-reverse));
+  margin-bottom: calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));
+}
+
+.pl-4 {
+  padding-left: 1rem;
+}
+
+.list-disc {
+  list-style-type: disc;
+}
+
+.list-inside {
+  list-style-position: inside;
+}
+
+.ml-4 {
+  margin-left: 1rem;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.bg-blue-opacity {
+  background-color: rgba(96, 120, 255, 0.1);
+}
+
+.text-blue-custom {
+  color: #6078ff;
+}
+
+.grid-cols-4-gap-2 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
+.grid-item-custom {
+  grid-column-start: 1;
+  grid-column-end: span 2;
+  grid-row-start: 1;
+  grid-row-end: span 2;
+}
+
+.border-gray-300 {
+  border: solid 1px #cbd5e1;
+}
+
+.rounded-lg {
+  border-radius: 0.5rem;
+}
+
+.max-h-125 {
+  max-height: 125px;
+}
+
+.p-1 {
+  padding: 0.25rem;
+}
+
+.max-h-50 {
+  max-height: 200px;
+  overflow: hidden;
+}
