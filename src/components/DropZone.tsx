@@ -21,7 +21,7 @@ export interface DropzoneProps {
    */
   accept?: string;
   /**
-    The classess you can add.
+    The classes you can add.
    */
   className?: string;
   /**
