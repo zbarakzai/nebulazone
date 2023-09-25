@@ -5,7 +5,7 @@ import {useEventListener} from '../utils/useEvent';
 import {isBrowser} from '../utils/isBrowser';
 import {
   cancelDefaultEvent,
-  getAllDragedFiles,
+  getAllDraggedFiles,
   checkFileAcceptance,
   getValidationErrors,
 } from '../utils/fileValidation';
@@ -146,7 +146,7 @@ export function DropZone({
         | React.ChangeEvent<HTMLInputElement>
         | React.DragEvent<HTMLInputElement>,
     ) => {
-      const fileList = getAllDragedFiles(event);
+      const fileList = getAllDraggedFiles(event);
 
       const {acceptedFiles, rejectedFiles} = checkFileAcceptance(
         fileList,
