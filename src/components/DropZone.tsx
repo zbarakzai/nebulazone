@@ -84,7 +84,7 @@ export interface DropzoneProps {
    */
   onDragLeave?: () => void;
   /**
-   * Callback triggered when files are droped.
+   * Callback triggered when files are dropped.
    */
   onDrop?: (
     files: File[],
