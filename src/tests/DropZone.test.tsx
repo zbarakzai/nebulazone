@@ -222,7 +222,7 @@ describe('<DropZone />', () => {
     const event = createFileEvent('dragover', files);
     fireEvent(document, event);
     expect(spy).not.toHaveBeenCalled();
-    // Eenter
+    // Enter
     const eventEnter = createFileEvent('dragleave', files);
     fireEvent(document, eventEnter);
     expect(spy).not.toHaveBeenCalled();

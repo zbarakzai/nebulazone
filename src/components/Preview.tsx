@@ -71,7 +71,7 @@ export interface PreviewProps {
    */
   imagePreviewUpscale?: boolean;
   /**
-    The classess you can add.
+    The classes you can add.
    */
   className?: string;
 }

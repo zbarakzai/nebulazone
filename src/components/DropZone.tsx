@@ -5,7 +5,7 @@ import {useEventListener} from '../utils/useEvent';
 import {isBrowser} from '../utils/isBrowser';
 import {
   cancelDefaultEvent,
-  getAllDragedFiles,
+  getAllDraggedFiles,
   checkFileAcceptance,
   getValidationErrors,
 } from '../utils/fileValidation';
@@ -21,7 +21,7 @@ export interface DropzoneProps {
    */
   accept?: string;
   /**
-    The classess you can add.
+    The classes you can add.
    */
   className?: string;
   /**
@@ -84,7 +84,7 @@ export interface DropzoneProps {
    */
   onDragLeave?: () => void;
   /**
-   * Callback triggered when files are droped.
+   * Callback triggered when files are dropped.
    */
   onDrop?: (
     files: File[],
@@ -146,7 +146,7 @@ export function DropZone({
         | React.ChangeEvent<HTMLInputElement>
         | React.DragEvent<HTMLInputElement>,
     ) => {
-      const fileList = getAllDragedFiles(event);
+      const fileList = getAllDraggedFiles(event);
 
       const {acceptedFiles, rejectedFiles} = checkFileAcceptance(
         fileList,
