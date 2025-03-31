@@ -61,7 +61,7 @@ export interface DropzoneProps {
    */
   onClick?(
     event: React.MouseEvent<HTMLElement>,
-    inputRef: React.RefObject<HTMLInputElement>,
+    inputRef: React.RefObject<HTMLInputElement | null>,
   ): void;
   /**
    * Callback function that activates when the drop operation includes at least one accepted file.

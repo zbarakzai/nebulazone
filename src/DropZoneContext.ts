@@ -19,7 +19,7 @@ export interface DropZoneContextType {
   /** Enables the disabled state. */
   disabled?: boolean;
   /** Root node containing drop zone and items */
-  rootNode: React.RefObject<HTMLDivElement>;
+  rootNode: React.RefObject<HTMLDivElement | null>;
 }
 
 export const DropZoneContext = createContext<DropZoneContextType | null>(null);

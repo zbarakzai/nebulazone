@@ -1,6 +1,6 @@
 {
   "name": "nebulazone",
-  "version": "0.0.7",
+  "version": "0.1.0",
   "description": "NebulaZone is a beautiful and feature-rich React Dropzone library that enables seamless file uploads with a touch of cosmic elegance. Embrace the beauty of the universe as you effortlessly handle file uploads in your React applications.",
   "scripts": {
     "build": "run-s clean build:types build:js",
@@ -39,21 +39,22 @@
     "@rollup/plugin-terser": "^0.4.3",
     "@rollup/plugin-typescript": "^11.1.2",
     "@rollup/plugin-virtual": "^3.0.1",
-    "@storybook/addon-essentials": "^7.1.0",
-    "@storybook/addon-interactions": "^7.1.0",
-    "@storybook/addon-links": "^7.1.0",
-    "@storybook/addon-onboarding": "^1.0.8",
-    "@storybook/blocks": "^7.1.0",
-    "@storybook/react": "^7.1.0",
-    "@storybook/react-vite": "^7.1.0",
+    "@storybook/addon-essentials": "^8.5.0",
+    "@storybook/addon-interactions": "^8.5.0",
+    "@storybook/addon-links": "^8.5.0",
+    "@storybook/addon-onboarding": "^8.5.0",
+    "@storybook/blocks": "^8.5.0",
+    "@storybook/react": "^8.5.0",
+    "@storybook/react-vite": "^8.5.0",
     "@storybook/testing-library": "^0.2.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^14.0.0",
     "@tsconfig/strictest": "^2.0.1",
-    "@types/react": "^18.2.15",
-    "@types/react-dom": "^18.2.7",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
     "@types/testing-library__jest-dom": "^5.14.9",
     "@typescript-eslint/eslint-plugin": "^6.2.1",
+    "@vitejs/plugin-react": "^4.3.4",
     "eslint": "^8.46.0",
     "eslint-plugin-import": "^2.28.0",
     "eslint-plugin-jsx-a11y": "^6.7.1",
@@ -66,18 +67,18 @@
     "rollup-plugin-dts": "^5.3.0",
     "rollup-plugin-node-externals": "^6.1.1",
     "rollup-plugin-peer-deps-external": "^2.2.4",
-    "storybook": "^7.1.0",
+    "storybook": "^8.5.0",
     "typescript": "^5.1.6",
     "vite": "^4.4.6",
     "vite-tsconfig-paths": "^4.2.0",
     "vitest": "^0.33.0"
   },
   "peerDependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
   },
   "engines": {
-    "node": "^14.0.0"
+    "node": "^16.0.0 || ^18.0.0 || ^20.0.0"
   },
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",

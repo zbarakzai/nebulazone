@@ -208,7 +208,7 @@ export function WithGridLayout() {
         accept="image/*"
       >
         <div className="relative h-full">
-          <div className="grid-cols-4-gap-2">
+          <div className="grid-cols-4-gap-2" style={{rowGap: '1rem'}}>
             {files.map((file, i) => (
               <div
                 className={`${
