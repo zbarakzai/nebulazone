@@ -228,7 +228,7 @@ function getFilesFromDragEvent(event: React.DragEvent<HTMLElement>) {
  * @param {React.DragEvent<HTMLElement> | React.ChangeEvent<HTMLInputElement>} event - The drag or change event
  * @returns {File[]} The files from the event
  */
-export function getAllDragedFiles(
+export function getAllDraggedFiles(
   event: React.DragEvent<HTMLElement> | React.ChangeEvent<HTMLInputElement>,
 ): File[] {
   if (['dragenter', 'dragover', 'drop'].includes(event.type)) {
